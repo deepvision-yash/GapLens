@@ -1,0 +1,151 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Font imports from Google Fonts - matching reference HTML */
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Roboto+Flex:wght@400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    overscroll-behavior: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  main > :first-child {
+    margin-top: 0 !important;
+  }
+  main > :last-child {
+    margin-bottom: 0 !important;
+  }
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+  .dark {
+    color-scheme: dark;
+  }
+  html {
+    @apply bg-background text-on-surface font-body;
+  }
+  body {
+    @apply bg-background text-on-surface font-body antialiased;
+  }
+  * {
+    @apply border-outline-variant;
+  }
+}
+
+/* Material Symbols Outlined icon font */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Text size utilities matching HTML design tokens */
+.font-headline-xl { @apply font-headline text-headline-xl; }
+.font-headline-sm { @apply font-headline text-headline-sm; }
+.font-label-md { @apply font-body text-label-md; }
+.font-body-md { @apply font-body text-body-md; }
+.font-body-sm { @apply font-body text-body-sm; }
+.font-data-sm { @apply font-data text-data-sm; }
+
+/* Component utilities */
+@layer components {
+  /* Button states from HTML */
+  .btn-primary-filled {
+    @apply bg-primary-container text-on-primary-fixed hover:bg-primary transition-all duration-150 cursor-pointer;
+  }
+  .btn-primary-disabled {
+    @apply bg-surface-container-high text-outline cursor-not-allowed;
+  }
+  .btn-outlined {
+    @apply bg-surface-container-high hover:bg-surface-container-highest border border-outline-variant text-on-surface transition-colors;
+  }
+  .btn-outlined-sm {
+    @apply px-2.5 py-1.5 rounded font-data-sm text-data-sm;
+  }
+  .btn-outlined-md {
+    @apply px-3 py-1.5 rounded font-label-md text-label-md;
+  }
+  
+  /* Input styles */
+  .input-field {
+    @apply bg-[#242526] border border-outline-variant rounded-lg p-4 font-body-md text-body-md text-on-surface placeholder:text-outline;
+    @apply focus:outline-none focus:border-primary-container transition-colors resize-none;
+  }
+  .input-field-sm {
+    @apply bg-surface-container border border-outline-variant rounded px-2.5 py-1.5 font-data-sm text-data-sm text-on-surface placeholder:text-outline;
+    @apply focus:outline-none focus:border-primary-container;
+  }
+  
+  /* Surface containers */
+  .surface-container {
+    @apply bg-surface-container;
+  }
+  .surface-container-low {
+    @apply bg-surface-container-low;
+  }
+  .surface-container-high {
+    @apply bg-surface-container-high;
+  }
+  .surface-container-highest {
+    @apply bg-surface-container-highest;
+  }
+  
+  /* Chip/item styles */
+  .source-chip {
+    @apply flex items-center justify-between px-2.5 py-1.5 rounded bg-surface-container border border-outline-variant;
+  }
+  .source-chip-content {
+    @apply flex items-center gap-2 min-w-0 pr-2;
+  }
+  .source-chip-actions {
+    @apply flex items-center gap-2 shrink-0;
+  }
+  
+  /* Status text */
+  .status-ready { @apply font-data-sm text-data-sm text-primary-container font-mono hidden sm:inline; }
+  .status-outline { @apply font-data-sm text-data-sm text-outline; }
+  
+  /* Reassurance bar */
+  .reassurance-item {
+    @apply flex items-center gap-1;
+  }
+  .reassurance-dot {
+    @apply w-1.5 h-1.5 rounded-full bg-outline-variant;
+  }
+}
+
+/* Animations */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin {
+  animation: spin 1s linear infinite;
+}

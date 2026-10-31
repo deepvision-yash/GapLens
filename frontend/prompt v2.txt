@@ -1,0 +1,376 @@
+You are working on the GapLens Shinchan Hackathon 2026 frontend project.
+
+Your task is to convert the NEW HTML template currently present in the html folder into a working page inside the EXISTING Next.js application.
+
+This is an incremental conversion task, NOT a new project creation.
+
+The existing project structure, frontend stack, routes, authentication, components, and previous pages must be preserved.
+
+==================================================
+1. FIRST INSPECT THE EXISTING PROJECT
+==================================================
+
+Before writing or modifying code, inspect the current project structure.
+
+Check:
+- package.json
+- package-lock.json
+- app/
+- app/layout.tsx
+- app/globals.css
+- components/
+- lib/
+- public/
+- Existing routes
+- Existing page files
+- Existing CSS files
+- Existing authentication files
+- Existing API client
+- Tailwind configuration
+- PostCSS configuration
+- Existing fonts and icon dependencies
+
+Understand:
+- Which Next.js version is being used (14.2.x App Router)
+- TypeScript project
+- Tailwind CSS is configured with Material Design 3 tokens
+- How pages are organized in app/ directory
+- How shared layouts and components work
+- How existing pages are styled
+
+Do not create a new Next.js project.
+Do not replace the existing project structure.
+Do not reset the project.
+Do not overwrite working pages.
+Do not remove existing routes.
+
+==================================================
+2. IDENTIFY THE NEW TEMPLATE AND ROUTE
+==================================================
+
+Identify the new HTML file currently present in the html folder (e.g., code.html).
+
+Read the complete HTML file before converting it.
+
+Determine the correct route from the provided task.
+
+CRITICAL: The reference HTML is a STANDALONE LANDING PAGE with:
+- NO sidebar
+- NO navigation shell  
+- NO header
+- NO AppShell wrapper
+- Just centered content in a flex container
+
+Create the page in the correct existing directory structure.
+Do not place the page in the wrong portal.
+Do not create duplicate routes.
+Do not modify unrelated pages.
+
+==================================================
+3. HTML TEMPLATE IS THE DESIGN SOURCE OF TRUTH
+==================================================
+
+The current HTML template is the single source of truth for the new page.
+
+Do not use previous pages as the design reference.
+
+Do not assume that the new template has the same:
+- Layout.
+- CSS.
+- Fonts.
+- Colors.
+- Spacing.
+- Components.
+- Navigation.
+- Sidebar.
+- Header.
+- Responsive behavior.
+
+Read and preserve the complete template, including:
+- HTML structure.
+- Head section.
+- Font imports.
+- CSS imports.
+- Inline styles.
+- Tailwind classes.
+- Custom CSS.
+- CSS variables.
+- JavaScript.
+- Images.
+- SVGs.
+- Icons.
+- Animations.
+- Hover states.
+- Forms.
+- Buttons.
+- Navigation.
+- All text content.
+
+Do not simplify the design.
+Do not remove sections.
+Do not replace detailed UI with placeholders.
+
+==================================================
+4. CONVERT HTML INTO VALID JSX
+==================================================
+
+Convert the HTML into valid React JSX.
+
+Apply all required conversions:
+- class → className
+- for → htmlFor
+- onclick → onClick
+- onchange → onChange
+- Other HTML events → React event handlers
+- Inline styles → React style objects
+- HTML comments → JSX comments
+- Invalid HTML nesting → valid JSX
+
+Preserve:
+- Text.
+- Labels.
+- Element hierarchy.
+- Sections.
+- Buttons.
+- Forms.
+- Images.
+- Icons.
+- Layout structure.
+- Original CSS class names where useful.
+
+Do not change the visual structure unnecessarily.
+
+==================================================
+5. PRESERVE THE ORIGINAL DESIGN EXACTLY
+==================================================
+
+The converted page must visually match the original HTML template.
+
+Preserve:
+- Colors (Material Design 3 tokens from HTML).
+- Backgrounds.
+- Font family (Plus Jakarta Sans, Roboto Flex, Space Mono).
+- Font size (headline-xl, headline-sm, label-md, body-md, body-sm, data-sm).
+- Font weight.
+- Line height.
+- Letter spacing.
+- Widths (max-w-[760px]).
+- Heights.
+- Padding.
+- Margins.
+- Gaps.
+- Borders (border-outline-variant).
+- Border radius (rounded-lg, rounded-2xl).
+- Shadows (shadow-sm).
+- Gradients.
+- Positioning.
+- Responsive behavior.
+- Animations (animate-spin).
+- Hover effects.
+- Focus states.
+- Disabled states.
+
+Do not redesign the page.
+Do not invent a new color palette.
+Do not choose a different font.
+Do not replace exact CSS values with approximate styling.
+
+If the original HTML uses custom CSS, preserve the custom CSS.
+If it uses Tailwind classes, ensure the existing Tailwind setup compiles them.
+If it uses inline styles (like bg-[#242526]), preserve them accurately.
+If it uses CSS variables, preserve them.
+
+==================================================
+6. CSS AND STYLING INTEGRATION
+==================================================
+
+The main priority is preventing the page from rendering as unstyled browser-default HTML.
+
+Before completing the task, verify that:
+- Fonts are loaded (Plus Jakarta Sans, Roboto Flex, Space Mono, Material Symbols Outlined).
+- Colors are applied (all Material Design 3 tokens).
+- Tailwind classes work.
+- Custom CSS is loaded (globals.css with @layer components).
+- CSS variables are available.
+- Icons render correctly (Material Symbols Outlined).
+- Images render correctly.
+- Responsive styles work.
+
+Use page-specific inline styles or CSS Modules when necessary for exact matches (e.g., bg-[#242526]).
+Avoid unnecessary global CSS changes.
+Do not add broad global selectors unless genuinely required.
+If global files must be modified, explain why and verify that existing pages are not broken.
+
+==================================================
+7. PRESERVE DEPENDENCIES, FONTS, ICONS, AND ASSETS
+==================================================
+
+Inspect the HTML for:
+- Google Fonts (Plus Jakarta Sans, Roboto Flex, Space Mono).
+- Material Symbols Outlined icons.
+- Tailwind CDN config (inline script).
+
+Reuse existing project dependencies where possible.
+If a required dependency is missing, add it properly.
+Do not silently replace missing fonts.
+Do not replace actual icons with text symbols or Lucide icons.
+Do not replace original images or logos with unrelated assets.
+Check public/ before adding new assets.
+Preserve image dimensions, aspect ratio, object-fit, and object-position.
+
+==================================================
+8. REUSE EXISTING CODE CAREFULLY
+==================================================
+
+Reuse existing components only when they are visually and functionally compatible with the new HTML template.
+
+Do not force the page into an existing component if that changes its appearance.
+
+Do not automatically reuse another portal's:
+- Sidebar.
+- Header.
+- Navbar.
+- Layout.
+- Cards.
+- Buttons.
+- Typography.
+
+CRITICAL: This landing page does NOT use AppShell, Sidebar, or any shared layout wrapper.
+Create page-specific components when necessary.
+
+Visual accuracy and correct functionality are more important than unnecessary reuse.
+
+==================================================
+9. AUTHENTICATION AND FUNCTIONALITY
+==================================================
+
+The page may be:
+- Public (this landing page is public).
+- A login or registration page.
+- An authenticated dashboard.
+
+Inspect the existing authentication and routing structure before making changes.
+
+If authentication already exists:
+- Reuse it.
+- Do not recreate it.
+- Do not replace it.
+- Do not bypass it.
+- Do not change its behavior unnecessarily.
+
+If the HTML contains interactions, convert them into React functionality.
+
+Preserve:
+- Forms.
+- Tabs.
+- Dropdowns.
+- Toggles.
+- Modals.
+- Search.
+- Password visibility.
+- Mobile navigation.
+- Button behavior.
+- Hover and focus states.
+
+Do not invent backend APIs or database fields.
+Use existing API clients and endpoints only when available.
+If backend integration is not yet available, use clearly separated prototype data without changing the design.
+
+==================================================
+10. DO NOT BREAK EXISTING PAGES
+==================================================
+
+Only modify files required for the new page.
+Do not modify unrelated routes.
+Do not remove existing pages.
+Do not overwrite working components.
+Do not change authentication behavior.
+Do not change shared CSS unnecessarily.
+
+If modifying a shared file is unavoidable:
+1. Explain why.
+2. Make the smallest required change.
+3. Check that existing pages still work.
+
+==================================================
+11. VALIDATE THE PAGE
+==================================================
+
+Run the existing project using its current scripts:
+npm run dev
+
+Open the new route and compare it with the original HTML template.
+
+Check:
+- Complete styling.
+- Correct fonts.
+- Correct colors.
+- Correct spacing.
+- Correct layout.
+- Correct images.
+- Correct icons (Material Symbols Outlined).
+- Correct buttons.
+- Correct borders and shadows.
+- Correct responsive behavior.
+- No browser-default styling.
+- No missing CSS.
+- No missing dependencies.
+- No console errors.
+- No compilation errors.
+- Existing pages still work.
+
+If the page appears unstyled, fix the CSS integration before completing the task.
+Do not claim completion if the page does not visually match the HTML template.
+
+==================================================
+12. GIT WORKFLOW — REQUIRED AFTER EVERY TASK
+==================================================
+
+After completing and testing the page, inspect Git status:
+git status
+
+Review the changed files:
+git diff --stat
+git diff
+
+Make sure only relevant files were changed.
+Do not commit unrelated files.
+Create a clear commit:
+git add <only-relevant-files>
+git commit -m "Add <page name> page"
+
+Before pushing, update from the latest main branch if required by the team workflow.
+Push the current feature branch:
+git push origin <current-branch>
+
+Do not work directly on main.
+Do not use git push --force.
+Do not reset or delete previous commits.
+Do not rewrite existing history.
+If merge conflicts occur, stop and explain the conflicts before committing.
+
+==================================================
+13. FINAL RESPONSE
+==================================================
+
+After completing the task, report:
+1. Route created.
+2. Files created.
+3. Files modified.
+4. CSS strategy used.
+5. Assets reused or added.
+6. Dependencies added.
+7. Authentication or API integration used, if any.
+8. Validation performed.
+9. Git commit hash.
+10. Git push status.
+11. Any remaining issues.
+
+FINAL INSTRUCTION:
+Convert only the new HTML template currently present in the html folder.
+Integrate it into the existing Next.js project using the current directory structure and technology stack.
+Preserve the original HTML design, CSS, fonts, icons, assets, layout, responsiveness, and interactions.
+Do not recreate the project.
+Do not redesign the page.
+Do not break existing pages.
+After successful validation, commit only the relevant changes and push them to the current feature branch.
