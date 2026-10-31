@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
+import { mockApi, isDemoMode } from '@/services/mockApi'
 
 export default function ResearchNewPage() {
   const router = useRouter()
@@ -114,7 +115,14 @@ export default function ResearchNewPage() {
     setDocItems(prev => prev.filter(item => item.id !== id))
   }
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleUrlKeydown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      addUrlItem()
+    }
+  }
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (topic.trim().length === 0 || isSubmitting) return
 
@@ -128,15 +136,34 @@ export default function ResearchNewPage() {
       btn.disabled = true
     }
 
-    setTimeout(() => {
-      router.push('/research/workspace')
-    }, 600)
-  }
+    try {
+      // Prepare sources from URL items and doc items
+      const sources = [
+        ...urlItems.map(item => ({ kind: 'url' as const, url: item.url })),
+        ...docItems.map(item => ({ kind: 'file' as const, fileId: item.id })),
+      ]
 
-  const handleUrlKeydown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      addUrlItem()
+      if (isDemoMode()) {
+        // Demo mode: use mock API
+        const result = await mockApi.createResearch({ goal: topic, sources })
+        // Navigate to scope page
+        router.push(`/research/${result.id}/scope`)
+      } else {
+        // Real API mode
+        const response = await fetch('/api/research', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ goal: topic, sources }),
+        })
+        if (!response.ok) throw new Error('Failed to create research')
+        const result = await response.json()
+        router.push(`/research/${result.id}/scope`)
+      }
+    } catch (error) {
+      console.error('Failed to create research:', error)
+      alert('Failed to start research. Please try again.')
+      setIsSubmitting(false)
+      updateSubmitButton()
     }
   }
 

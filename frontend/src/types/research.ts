@@ -32,6 +32,14 @@ export type FreshnessStatus =
 
 export type Priority = 'critical' | 'high' | 'medium' | 'low'
 
+export type ConflictType =
+  | 'genuine'
+  | 'temporal'
+  | 'contextual'
+  | 'definitional'
+  | 'jurisdictional'
+  | 'uncertain'
+
 export interface ResearchSession {
   id: string
   title: string
@@ -53,6 +61,7 @@ export interface ResearchDimension {
   description: string
   coverageStatus?: CoverageStatus
   claimCount?: number
+  priority?: number
 }
 
 export interface ResearchSource {
@@ -65,6 +74,8 @@ export interface ResearchSource {
   lastModified?: string
   retrievalDate?: string
   extractionStatus?: 'pending' | 'success' | 'partial' | 'failed'
+  authorityScore?: number
+  relevanceScore?: number
 }
 
 export interface EvidenceClaim {
@@ -93,8 +104,9 @@ export interface ResearchConflict {
   title: string
   claimA: EvidenceClaim
   claimB: EvidenceClaim
-  conflictType: 'genuine' | 'temporal' | 'contextual' | 'definitional' | 'jurisdictional' | 'uncertain'
+  conflictType: ConflictType
   resolutionAction?: string
+  confidence: number
 }
 
 export interface VerificationTask {
@@ -107,6 +119,96 @@ export interface VerificationTask {
   sourceIds: string[]
   recommendedAuthority?: string
   verificationMethod?: string
+}
+
+export interface SourceResponse {
+  id: string
+  title: string
+  url?: string
+  domain?: string
+  sourceType: string
+  publicationDate?: string
+  lastModified?: string
+  retrievalDate?: string
+  authorityScore: number
+  relevanceScore: number
+  extractionStatus: string
+  contentPreview?: string
+}
+
+export interface ClaimResponse {
+  id: string
+  text: string
+  status: string
+  dimensionId?: string
+  sourceId?: string
+  exactExcerpt?: string
+  confidence?: number
+  freshness?: string
+}
+
+export interface GapResponse {
+  id: string
+  title: string
+  explanation: string
+  priority: Priority
+  dimensionId?: string
+  relatedClaimIds: string[]
+  nextAction?: string
+  recommendedAuthority?: string
+  verificationMethod?: string
+}
+
+export interface ConflictResponse {
+  id: string
+  title: string
+  claimA: ClaimResponse
+  claimB: ClaimResponse
+  conflictType: ConflictType
+  resolutionAction?: string
+  confidence: number
+  entity?: string
+  attribute?: string
+}
+
+export interface VerificationTaskResponse {
+  id: string
+  title: string
+  priority: Priority
+  explanation: string
+  completed: boolean
+  dimensionId?: string
+  sourceIds: string[]
+  recommendedAuthority?: string
+  verificationMethod?: string
+}
+
+export interface ResearchResultsResponse {
+  sessionId: string
+  goal: {
+    originalQuery: string
+    interpretedObjective: string
+    entities: Array<{ name: string; type: string }>
+    scope: string[]
+    geography: string[]
+    timeConstraints: string | null
+    constraints: string[]
+  }
+  dimensions: Array<{
+    id: string
+    name: string
+    description: string
+    coverageStatus?: CoverageStatus
+    claimCount?: number
+  }>
+  sources: SourceResponse[]
+  claims: ClaimResponse[]
+  gaps: GapResponse[]
+  conflicts: ConflictResponse[]
+  checklist: VerificationTaskResponse[]
+  status: 'completed' | 'partial' | 'failed'
+  completedAt?: string
+  isPartial: boolean
 }
 
 export interface SourceInput {
@@ -130,7 +232,7 @@ export const STATUS_LABELS: Record<SessionStatus, string> = {
   failed: 'Failed',
 }
 
-export const COVERAGE_STATUS_LABELS: Record<CoverageStatus, string> = {
+export const COVERAGE_STATUS_LABELS: Record<string, string> = {
   covered: 'Covered',
   partial: 'Partial',
   missing: 'Missing',
@@ -139,21 +241,21 @@ export const COVERAGE_STATUS_LABELS: Record<CoverageStatus, string> = {
   weak_evidence: 'Weak evidence',
 }
 
-export const FINDING_STATUS_LABELS: Record<FindingStatus, string> = {
+export const FINDING_STATUS_LABELS: Record<string, string> = {
   verified: 'Verified',
   potential: 'Potential',
   uncertain: 'Uncertain',
   unverified: 'Unverified',
 }
 
-export const PRIORITY_LABELS: Record<Priority, string> = {
+export const PRIORITY_LABELS: Record<string, string> = {
   critical: 'Critical',
   high: 'High',
   medium: 'Medium',
   low: 'Low',
 }
 
-export const FRESHNESS_LABELS: Record<FreshnessStatus, string> = {
+export const FRESHNESS_LABELS: Record<string, string> = {
   current: 'Current',
   aging: 'Aging',
   outdated: 'Outdated',

@@ -1,0 +1,46 @@
+# FastAPI and web framework
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+pydantic==2.10.0
+pydantic-settings==2.3.4
+python-multipart==0.0.9
+
+# Database
+sqlalchemy==2.0.43
+aiosqlite==0.19.0
+alembic==1.18.3
+
+# Vector search (sqlite-vec for MVP)
+sqlite-vec==0.1.6
+
+# HTTP client
+httpx==0.27.0
+
+# LLM clients
+google-generativeai==0.7.2
+groq==0.13.0
+
+# Search & Extraction
+tavily-python==0.8.5
+
+# Background tasks & SSE
+sse-starlette==2.1.0
+
+# Utilities
+python-dotenv==1.0.1
+pydantic-extra-types==2.6.0
+email-validator==2.1.0.post1
+python-dateutil==2.9.0.post0
+
+# Logging
+structlog==24.1.0
+
+# Testing
+pytest==8.2.2
+pytest-asyncio==0.23.6
+httpx==0.27.0
+
+# Development
+black==24.4.2
+ruff==0.4.4
+mypy==1.10.0
