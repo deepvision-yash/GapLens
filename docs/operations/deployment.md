@@ -2,13 +2,13 @@
 
 ## Current deployment shape
 
-GapLens is currently one FastAPI process that serves both the API and static HTML frontend. The default database is SQLite and pipeline progress is process-local. `docker-compose.yml` is empty, and no production deployment workflow is configured in this repository.
+GapLens is currently one FastAPI process that serves both the API and static HTML frontend. The default database is SQLite and pipeline progress is process-local. No container orchestration or production deployment workflow is configured in this repository.
 
 These defaults suit local development and controlled demos. Before a public or multi-user deployment, complete the prerequisites below.
 
 ## Deployment prerequisites
 
-1. **Access control:** implement authentication, session ownership, and authorization. Session IDs alone do not protect data.
+1. **Access control:** the MVP has email/password auth and session ownership checks. Add rate limits, account recovery, and production identity controls before public deployment.
 2. **Database durability:** configure persistent storage or a managed database. Confirm the selected SQLAlchemy async driver, backup/restore process, and migration path. `create_all` is not a schema migration strategy.
 3. **Background work:** move long-running research runs to a durable worker/queue. Store progress in shared infrastructure instead of process memory before using multiple workers or replicas.
 4. **Secrets:** inject provider keys through the hosting platform's secret store. Do not put them in source, container layers, build args, or logs.

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600&amp;family=Roboto+Flex:wght@400;500;600&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-container-lowest": "#0e0e0e", "secondary-fixed": "#d8e3fa", "tertiary-fixed": "#ffdead", "on-primary-container": "#33537f", "on-tertiary-fixed-variant": "#604100", "on-error": "#690005", "surface": "#131313", "error": "#ffb4ab", "on-primary-fixed": "#001c3b", "on-primary": "#0a315b", "surface-dim": "#131313", "on-tertiary-container": "#6d4c07", "outline": "#8d9199", "surface-variant": "#353534", "surface-container": "#201f1f", "on-secondary": "#263142", "on-surface-variant": "#c3c6d0", "surface-container-highest": "#353534", "on-primary-fixed-variant": "#274773", "on-tertiary": "#432c00", "surface-tint": "#a9c8fb", "tertiary-fixed-dim": "#eebf73", "on-error-container": "#ffdad6", "on-tertiary-fixed": "#281900", "background": "#131313", "on-secondary-fixed": "#111c2d", "secondary-fixed-dim": "#bcc7dd", "tertiary": "#ffdca9", "secondary-container": "#3c475a", "on-background": "#e5e2e1", "secondary": "#bcc7dd", "surface-bright": "#393939", "inverse-surface": "#e5e2e1", "error-container": "#93000a", "primary-fixed-dim": "#a9c8fb", "primary-fixed": "#d5e3ff", "on-secondary-container": "#aab6cc", "surface-container-high": "#2a2a2a", "surface-container-low": "#1c1b1b", "tertiary-container": "#edbe72", "on-surface": "#e5e2e1", "inverse-on-surface": "#313030", "on-secondary-fixed-variant": "#3c475a", "outline-variant": "#43474f", "primary-container": "#a8c7fa", "primary": "#d3e2ff", "inverse-primary": "#405f8c" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin": "1.5rem", "space-sm": "0.75rem", "space-xs": "0.5rem", "space-xl": "2rem", "space-lg": "1.5rem", "space-2xs": "0.25rem", "gutter-sm": "0.5rem", "space-md": "1rem", "space-2xl": "3rem", "gutter": "1rem", "margin-sm": "1rem" }, "fontFamily": { "headline-sm": [ "Plus Jakarta Sans" ], "body-lg": [ "Roboto Flex" ], "headline-md": [ "Plus Jakarta Sans" ], "body-sm": [ "Roboto Flex" ], "label-mono-sm": [ "Space Mono" ], "headline-xl": [ "Plus Jakarta Sans" ], "headline-lg": [ "Plus Jakarta Sans" ], "body-md": [ "Roboto Flex" ], "label-mono-lg": [ "Space Mono" ], "label-mono-md": [ "Space Mono" ] }, "fontSize": { "headline-sm": [ "15px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "600" } ], "body-lg": [ "15px", { "lineHeight": "24px", "letterSpacing": "0.005em", "fontWeight": "400" } ], "headline-md": [ "18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600" } ], "body-sm": [ "12px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "400" } ], "label-mono-sm": [ "10px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "400" } ], "headline-xl": [ "32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" } ], "headline-lg": [ "24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" } ], "body-md": [ "13px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "400" } ], "label-mono-lg": [ "13px", { "lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "400" } ], "label-mono-md": [ "11px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "400" } ] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-[280px] bg-surface-container-low border-r border-outline-variant rounded-none z-50 flex flex-col justify-between select-none"><div class="flex flex-col"><div class="h-14 px-margin-sm border-b border-outline-variant flex items-center gap-space-xs"><img alt="GapLens Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UALMJ5ntTTERR4p5-Kb0chcSwVsg7IEPT-8H-VH8D8SzlYLGzkRfIQGbNgARVYBEg_vBBa-U4nXN-aQwkM8szMP4Oz9Xz52DYdtSEoeInJ2ftysiaDzaOTxq1otg-gis5kdO85R9xMm4Oa-NXD4ajmWS23FUUgCRy0gGN0d3wqNUuXUuMb_gC55LleVeEmjCJFYzSR-Vuv--Bj6O0_vhVPiUoxY0le9pZL6AanIsie"/><div class="flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm text-on-surface leading-none truncate">GapLens AI</span><span class="font-label-mono-sm text-label-mono-sm text-outline uppercase tracking-wider leading-none mt-1">Research Intelligence</span></div></div><div class="p-space-md"><a class="flex items-center justify-center gap-space-xs w-full py-space-xs px-space-md bg-secondary-container text-primary-container border border-primary-container/30 hover:border-primary-container hover:bg-secondary-container/80 transition-colors font-body-md text-body-md font-medium" data-path="research-workspace" href="#"><span class="material-symbols-outlined text-[18px]">add</span><span>+ New Research</span></a></div><nav class="flex flex-col px-space-xs gap-space-2xs" data-active-classes="bg-surface-container text-primary border-l-2 border-primary"><a class="flex items-center gap-space-xs px-space-sm py-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" data-path="research-workspace" href="#"><span class="material-symbols-outlined text-[18px]">terminal</span><span class="font-body-md text-body-md">Research Workspace</span></a><a class="flex items-center gap-space-xs px-space-sm py-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" data-path="evidence-library" href="#"><span class="material-symbols-outlined text-[18px]">dataset</span><span class="font-body-md text-body-md">Evidence Library</span></a><a class="flex items-center gap-space-xs px-space-sm py-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" data-path="gap-reports" href="#"><span class="material-symbols-outlined text-[18px]">analytics</span><span class="font-body-md text-body-md">Gap Reports</span></a></nav></div><div class="border-t border-outline-variant p-space-md bg-surface-container-lowest flex flex-col gap-space-2xs"><div class="flex items-center justify-between"><span class="font-label-mono-md text-label-mono-md text-outline">GapLens AI</span><span class="font-label-mono-sm text-label-mono-sm text-on-surface-variant px-1 border border-outline-variant bg-surface-container">v1.4.2-engine</span></div><div class="flex items-center gap-space-xs mt-1"><span class="h-1.5 w-1.5 rounded-full bg-primary-container"></span><span class="font-label-mono-sm text-label-mono-sm text-on-surface-variant">Core Engine: Operational</span></div></div></aside><div class="pl-[280px] min-h-screen flex flex-col"><header class="fixed top-0 left-[280px] right-0 h-14 bg-surface-container-low border-b border-outline-variant z-40 px-margin flex items-center justify-between"><div class="flex items-center gap-space-xs"><span class="font-label-mono-md text-label-mono-md text-outline">GapLens</span><span class="font-label-mono-md text-label-mono-md text-outline-variant">/</span><span class="font-label-mono-md text-label-mono-md text-on-surface">New Research</span></div><div class="flex items-center gap-space-md"><div class="hidden md:flex items-center gap-space-xs px-space-xs py-space-2xs border border-outline-variant bg-surface-container-lowest font-label-mono-sm text-label-mono-sm text-on-surface-variant"><span class="material-symbols-outlined text-[14px] text-primary-container">memory</span><span>LATENCY: 24ms</span></div><div class="hidden sm:flex items-center gap-space-2xs px-space-xs py-space-2xs border border-outline-variant bg-surface-container-lowest font-label-mono-sm text-label-mono-sm text-on-surface-variant"><span class="material-symbols-outlined text-[14px] text-primary-container">sync</span><span>SYNCED</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center cursor-pointer hover:bg-primary-fixed-dim transition-colors"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-14 w-full flex-1 bg-surface"><div class="flex flex-col w-full text-on-surface">
+<!-- Top Session Telemetry Strip -->
+<div class="w-full bg-surface-container-lowest border-b border-outline-variant px-margin py-space-2xs flex flex-wrap items-center justify-between gap-space-sm font-label-mono-sm text-label-mono-sm">
+<div class="flex items-center gap-space-md text-on-surface-variant flex-wrap">
+<span class="flex items-center gap-space-2xs text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span>NODE: gl-us-east-cluster-04</span>
+</span>
+<span class="text-outline">/</span>
+<span>INDEX: 2024.10-04</span>
+<span class="text-outline">/</span>
+<span>LATENCY: 24ms</span>
+<span class="text-outline">/</span>
+<span class="text-primary-container">STATE: SYNCED</span>
+</div>
+<div class="flex items-center gap-space-xs text-outline">
+<span class="uppercase">Session Token:</span>
+<span class="text-on-surface font-label-mono-md text-label-mono-md px-1.5 py-0.5 bg-surface-container border border-outline-variant rounded">#GL-8842-NEW</span>
+</div>
+</div>
+<div class="p-margin flex flex-col gap-space-md max-w-full">
+<!-- View Header & Supporting Subtitle -->
+<div class="flex flex-col gap-space-2xs">
+<div class="flex items-center justify-between">
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Research Intelligence</h1>
+<div class="flex items-center gap-space-xs font-label-mono-sm text-label-mono-sm">
+<span class="px-2 py-0.5 bg-surface-container-high border border-outline-variant text-on-surface-variant rounded">ENGINE: V4_SYNTHESIS</span>
+<span class="px-2 py-0.5 bg-secondary-container text-primary-container border border-outline-variant rounded font-medium">COMPLETE</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+        Explore extracted evidence, isolate information gaps, and inspect cross-source divergence protocols.
+      </p>
+</div>
+<!-- Target Objective Banner -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-space-sm flex flex-col md:flex-row md:items-center justify-between gap-space-sm">
+<div class="flex items-start md:items-center gap-space-sm">
+<div class="px-1.5 py-1 bg-surface-container-highest border border-outline-variant rounded text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">target</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-mono-sm text-label-mono-sm text-outline uppercase tracking-wider">Research Objective</span>
+<span class="font-body-md text-body-md text-on-surface font-medium">
+            Analyse the current adoption, challenges, and future opportunities of AI in Indian healthcare.
+          </span>
+</div>
+</div>
+<div class="flex items-center gap-space-2xs shrink-0 self-end md:self-auto font-label-mono-sm text-label-mono-sm">
+<span class="px-2 py-0.5 bg-surface-container border border-outline-variant text-outline rounded">[SESSION: gl-8842-new]</span>
+<span class="px-2 py-0.5 bg-surface-container border border-outline-variant text-outline rounded">[COMPLETED: 10:48:12 UTC]</span>
+<span class="px-2 py-0.5 bg-secondary-container border border-outline-variant text-primary-container rounded">[SYNTHESIS_V4]</span>
+</div>
+</div>
+<!-- Navigation Sub-Tabs -->
+<div class="flex items-center border-b border-outline-variant gap-space-xs">
+<button class="flex items-center gap-space-xs px-space-md py-space-xs bg-secondary-container border-b-2 border-primary-container text-on-surface font-headline-sm text-headline-sm transition-colors">
+<span class="material-symbols-outlined text-[16px] text-primary-container">dashboard</span>
+<span>Overview</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-md py-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container border-b-2 border-transparent font-headline-sm text-headline-sm transition-colors">
+<span class="material-symbols-outlined text-[16px]">dataset</span>
+<span>Evidence (42 Claims)</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-md py-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container border-b-2 border-transparent font-headline-sm text-headline-sm transition-colors">
+<span class="material-symbols-outlined text-[16px]">fact_check</span>
+<span>Verification (Checklist Ready)</span>
+</button>
+</div>
+<!-- Research Summary Metrics Bar -->
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 bg-surface-container-low border border-outline-variant rounded-lg divide-y sm:divide-y-0 sm:divide-x divide-outline-variant">
+<div class="p-space-sm flex flex-col justify-between">
+<span class="font-label-mono-sm text-label-mono-sm text-outline uppercase tracking-wider">Sources Found</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-headline-md text-headline-md text-on-surface">12</span>
+<span class="font-label-mono-sm text-label-mono-sm text-on-surface-variant">DISCOVERED</span>
+</div>
+</div>
+<div class="p-space-sm flex flex-col justify-between">
+<span class="font-label-mono-sm text-label-mono-sm text-outline uppercase tracking-wider">Extracted</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-headline-md text-headline-md text-on-surface">11</span>
+<span class="font-label-mono-sm text-label-mono-sm text-primary-container">91.6% SUCCESS</span>
+</div>
+</div>
+<div class="p-space-sm flex flex-col justify-between">
+<span class="font-label-mono-sm text-label-mono-sm text-outline uppercase tracking-wider">Claims Stored</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-headline-md text-headline-md text-on-surface">42</span>
+<span class="font-label-mono-sm text-label-mono-sm text-on-surface-variant">ATOMIC</span>
+</div>
+</div>
+<div class="p-space-sm flex flex-col justify-between">
+<span class="font-label-mono-sm text-label-mono-sm text-outline uppercase tracking-wider">Dimensions</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-headline-md text-headline-md text-on-surface">4</span>
+<span class="font-label-mono-sm text-label-mono-sm text-on-surface-variant">EVALUATED</span>
+</div>
+</div>
+<div class="p-space-sm flex flex-col justify-between">
+<span class="font-label-mono-sm text-label-mono-sm text-outline uppercase tracking-wider">Identified Gaps</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-headline-md text-headline-md text-error">3</span>
+<span class="font-label-mono-sm text-label-mono-sm text-error">ACTIONABLE</span>
+</div>
+</div>
+<div class="p-space-sm flex flex-col justify-between">
+<span class="font-label-mono-sm text-label-mono-sm text-outline uppercase tracking-wider">Conflicting Claims</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-headline-md text-headline-md text-tertiary-container">2</span>
+<span class="font-label-mono-sm text-label-mono-sm text-tertiary-container">DISCORDANT</span>
+</div>
+</div>
+</div>
+<!-- Structured 2-Column Grid Layout -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-space-md items-start">
+<!-- Left Column: Coverage + Gaps (7 cols on XL) -->
+<div class="xl:col-span-7 flex flex-col gap-space-md">
+<!-- Section A: Research Coverage -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg flex flex-col overflow-hidden">
+<div class="px-space-md py-space-sm border-b border-outline-variant flex items-center justify-between bg-surface-container">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-primary-container">view_column</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Research Coverage by Dimension</span>
+</div>
+<span class="font-label-mono-sm text-label-mono-sm text-outline">4 CRITERIA DEFINED</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant font-label-mono-sm text-label-mono-sm text-outline uppercase bg-surface-container-lowest">
+<th class="py-space-xs px-space-md font-normal">Dimension Name</th>
+<th class="py-space-xs px-space-sm font-normal">Status</th>
+<th class="py-space-xs px-space-sm font-normal">Claims</th>
+<th class="py-space-xs px-space-sm font-normal">Priority</th>
+<th class="py-space-xs px-space-md font-normal text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant font-body-sm text-body-sm">
+<tr class="hover:bg-surface-container transition-colors">
+<td class="py-space-sm px-space-md">
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface">Clinical Diagnostic Accuracy &amp; Efficacy</span>
+<span class="font-label-mono-sm text-label-mono-sm text-outline">Dim ID: DIM-ACC-01</span>
+</div>
+</td>
+<td class="py-space-sm px-space-sm">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 bg-[#1B382B] text-[#8CE99A] border border-[#2E4B3E] rounded font-label-mono-sm text-label-mono-sm">
+<span class="w-1 h-1 rounded-full bg-[#8CE99A]"></span> Covered
+                    </span>
+</td>
+<td class="py-space-sm px-space-sm font-label-mono-md text-label-mono-md text-on-surface">18 claims</td>
+<td class="py-space-sm px-space-sm font-label-mono-sm text-label-mono-sm text-on-surface-variant">High</td>
+<td class="py-space-sm px-space-md text-right">
+<button class="inline-flex items-center gap-1 font-label-mono-sm text-label-mono-sm text-primary-container hover:underline">
+<span>Inspect Claims</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container transition-colors">
+<td class="py-space-sm px-space-md">
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface">Regulatory Frameworks &amp; Data Sovereignty</span>
+<span class="font-label-mono-sm text-label-mono-sm text-outline">Dim ID: DIM-REG-02</span>
+</div>
+</td>
+<td class="py-space-sm px-space-sm">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 bg-[#1B382B] text-[#8CE99A] border border-[#2E4B3E] rounded font-label-mono-sm text-label-mono-sm">
+<span class="w-1 h-1 rounded-full bg-[#8CE99A]"></span> Covered
+                    </span>
+</td>
+<td class="py-space-sm px-space-sm font-label-mono-md text-label-mono-md text-on-surface">14 claims</td>
+<td class="py-space-sm px-space-sm font-label-mono-sm text-label-mono-sm text-on-surface-variant">High</td>
+<td class="py-space-sm px-space-md text-right">
+<button class="inline-flex items-center gap-1 font-label-mono-sm text-label-mono-sm text-primary-container hover:underline">
+<span>Inspect Claims</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container transition-colors">
+<td class="py-space-sm px-space-md">
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface">Rural Infrastructure &amp; Last-Mile Delivery</span>
+<span class="font-label-mono-sm text-label-mono-sm text-outline">Dim ID: DIM-INF-03</span>
+</div>
+</td>
+<td class="py-space-sm px-space-sm">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 bg-[#42361C] text-[#F6C445] border border-[#6D4C07] rounded font-label-mono-sm text-label-mono-sm">
+<span class="w-1 h-1 rounded-full bg-[#F6C445]"></span> Partial
+                    </span>
+</td>
+<td class="py-space-sm px-space-sm font-label-mono-md text-label-mono-md text-on-surface">7 claims</td>
+<td class="py-space-sm px-space-sm font-label-mono-sm text-label-mono-sm text-on-surface-variant">Medium</td>
+<td class="py-space-sm px-space-md text-right">
+<button class="inline-flex items-center gap-1 font-label-mono-sm text-label-mono-sm text-primary-container hover:underline">
+<span>Inspect Claims</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container transition-colors">
+<td class="py-space-sm px-space-md">
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface">Economic Feasibility &amp; Reimbursement Models</span>
+<span class="font-label-mono-sm text-label-mono-sm text-outline">Dim ID: DIM-ECO-04</span>
+</div>
+</td>
+<td class="py-space-sm px-space-sm">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 bg-[#3E2023] text-[#F28B82] border border-error-container rounded font-label-mono-sm text-label-mono-sm">
+<span class="w-1 h-1 rounded-full bg-[#F28B82]"></span> Missing
+                    </span>
+</td>
+<td class="py-space-sm px-space-sm font-label-mono-md text-label-mono-md text-error">3 claims</td>
+<td class="py-space-sm px-space-sm font-label-mono-sm text-label-mono-sm text-on-surface-variant">Medium</td>
+<td class="py-space-sm px-space-md text-right">
+<button class="inline-flex items-center gap-1 font-label-mono-sm text-label-mono-sm text-primary-container hover:underline">
+<span>Inspect Claims</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Section B: Identified Gaps -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg flex flex-col overflow-hidden">
+<div class="px-space-md py-space-sm border-b border-outline-variant flex items-center justify-between bg-surface-container">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-error">warning</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Identified Information Gaps</span>
+</div>
+<span class="font-label-mono-sm text-label-mono-sm text-error">3 GAPS DETECTED</span>
+</div>
+<div class="flex flex-col divide-y divide-outline-variant">
+<!-- Gap 1 -->
+<div class="p-space-md flex flex-col gap-space-xs hover:bg-surface-container/50 transition-colors">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-mono-sm text-label-mono-sm px-1.5 py-0.5 bg-error-container text-error rounded uppercase font-medium">Critical Gap #01</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Lack of Empirical Cost-Effectiveness Data under PM-JAY / AB-PMJAY</span>
+</div>
+<span class="px-2 py-0.5 bg-surface-container border border-outline-variant text-outline rounded font-label-mono-sm text-label-mono-sm shrink-0">DIM-ECO-04</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                No peer-reviewed health economics studies evaluating reimbursement tariff concordance for AI-assisted diagnostic screening in public tertiary hospitals.
+              </p>
+<div class="mt-1 flex flex-wrap items-center justify-between gap-space-xs pt-space-xs border-t border-outline-variant/60 font-label-mono-sm text-label-mono-sm">
+<div class="flex items-center gap-space-xs text-outline">
+<span class="text-on-surface-variant">Provenance Audit:</span>
+<span>Absent in NHA ABDM Whitepaper 2024; partial reference in medtech-asia.io snippet.</span>
+</div>
+<button class="text-primary-container hover:underline flex items-center gap-1">
+<span>Draft Search Query</span>
+<span class="material-symbols-outlined text-[13px]">search</span>
+</button>
+</div>
+</div>
+<!-- Gap 2 -->
+<div class="p-space-md flex flex-col gap-space-xs hover:bg-surface-container/50 transition-colors">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-mono-sm text-label-mono-sm px-1.5 py-0.5 bg-[#42361C] text-[#F6C445] border border-[#6D4C07] rounded uppercase font-medium">Moderate Gap #02</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Offline / Edge-Inference Validation in Sub-Center Healthcare Facilities</span>
+</div>
+<span class="px-2 py-0.5 bg-surface-container border border-outline-variant text-outline rounded font-label-mono-sm text-label-mono-sm shrink-0">DIM-INF-03</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                Models tested in tertiary centers rely on stable 4G/optical fiber; lack validation benchmarks for edge-AI hardware in intermittent connectivity Primary Health Centers (PHCs).
+              </p>
+<div class="mt-1 flex flex-wrap items-center justify-between gap-space-xs pt-space-xs border-t border-outline-variant/60 font-label-mono-sm text-label-mono-sm">
+<div class="flex items-center gap-space-xs text-outline">
+<span class="text-on-surface-variant">Provenance Audit:</span>
+<span>Not addressed in Lancet regional health study dataset parameters.</span>
+</div>
+<button class="text-primary-container hover:underline flex items-center gap-1">
+<span>Draft Search Query</span>
+<span class="material-symbols-outlined text-[13px]">search</span>
+</button>
+</div>
+</div>
+<!-- Gap 3 -->
+<div class="p-space-md flex flex-col gap-space-xs hover:bg-surface-container/50 transition-colors">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-mono-sm text-label-mono-sm px-1.5 py-0.5 bg-[#42361C] text-[#F6C445] border border-[#6D4C07] rounded uppercase font-medium">Moderate Gap #03</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Standardized Medico-Legal Liability Protocols for Diagnostic False Negatives</span>
+</div>
+<span class="px-2 py-0.5 bg-surface-container border border-outline-variant text-outline rounded font-label-mono-sm text-label-mono-sm shrink-0">DIM-REG-02</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                CDSCO draft guidelines provide classification criteria but lack clinical liability definitions when clinician overrides AI triage recommendations in emergency contexts.
+              </p>
+<div class="mt-1 flex flex-wrap items-center justify-between gap-space-xs pt-space-xs border-t border-outline-variant/60 font-label-mono-sm text-label-mono-sm">
+<div class="flex items-center gap-space-xs text-outline">
+<span class="text-on-surface-variant">Provenance Audit:</span>
+<span>CDSCO SaMD Draft (Oct 2023) Section 4.2 silent on clinician indemnity.</span>
+</div>
+<button class="text-primary-container hover:underline flex items-center gap-1">
+<span>Draft Search Query</span>
+<span class="material-symbols-outlined text-[13px]">search</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Conflicts + Sources (5 cols on XL) -->
+<div class="xl:col-span-5 flex flex-col gap-space-md">
+<!-- Section C: Conflicting Evidence -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg flex flex-col overflow-hidden">
+<div class="px-space-md py-space-sm border-b border-outline-variant flex items-center justify-between bg-surface-container">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-tertiary-container">sync_problem</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Conflicting Evidence</span>
+</div>
+<span class="font-label-mono-sm text-label-mono-sm text-tertiary-container">2 DIVERGENCES</span>
+</div>
+<div class="flex flex-col divide-y divide-outline-variant">
+<!-- Conflict 1 -->
+<div class="p-space-md flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface">Sensitivity in Low-Dose Chest Radiography</span>
+<span class="font-label-mono-sm text-label-mono-sm px-1.5 py-0.5 bg-surface-container border border-outline-variant text-tertiary-container rounded">Empirical vs. Statutory</span>
+</div>
+<!-- Side-by-Side Sources -->
+<div class="grid grid-cols-1 gap-space-xs font-body-sm text-body-sm">
+<div class="p-space-xs bg-surface-container border border-outline-variant rounded flex flex-col gap-1">
+<div class="flex items-center justify-between font-label-mono-sm text-label-mono-sm">
+<span class="text-primary-container">Source A: ICMR Technical Specs</span>
+<span class="text-outline">icmr.nic.in · Nov 2023</span>
+</div>
+<p class="text-on-surface">
+                    "Requires minimum <strong class="text-on-surface font-medium text-primary">92.5% sensitivity</strong> with 85% specificity under standardized acquisition protocols."
+                  </p>
+</div>
+<div class="p-space-xs bg-surface-container border border-outline-variant rounded flex flex-col gap-1">
+<div class="flex items-center justify-between font-label-mono-sm text-label-mono-sm">
+<span class="text-error">Source B: Lancet PHC Cohort</span>
+<span class="text-outline">thelancet.com · Jan 2024</span>
+</div>
+<p class="text-on-surface">
+                    "Observed field sensitivity <strong class="text-error font-medium">dropped to 78.4%</strong> due to artifact variance in rural legacy hardware digitizers."
+                  </p>
+</div>
+</div>
+<div class="flex items-center justify-between pt-space-2xs">
+<span class="font-label-mono-sm text-label-mono-sm text-outline">Delta: 14.1% sensitivity gap</span>
+<button class="inline-flex items-center gap-1 font-label-mono-sm text-label-mono-sm text-primary-container hover:underline">
+<span>View Evidence Graph</span>
+<span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</button>
+</div>
+</div>
+<!-- Conflict 2 -->
+<div class="p-space-md flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface">Data Residency vs. Distributed Weight Ingestion</span>
+<span class="font-label-mono-sm text-label-mono-sm px-1.5 py-0.5 bg-surface-container border border-outline-variant text-tertiary-container rounded">Regulatory Ambiguity</span>
+</div>
+<div class="grid grid-cols-1 gap-space-xs font-body-sm text-body-sm">
+<div class="p-space-xs bg-surface-container border border-outline-variant rounded flex flex-col gap-1">
+<div class="flex items-center justify-between font-label-mono-sm text-label-mono-sm">
+<span class="text-primary-container">Source A: DPDP Act &amp; ABDM</span>
+<span class="text-outline">nha.gov.in · Mar 2024</span>
+</div>
+<p class="text-on-surface">
+                    "All diagnostic telemetry and clinical patient embeddings must strictly reside within Indian sovereign territory."
+                  </p>
+</div>
+<div class="p-space-xs bg-surface-container border border-outline-variant rounded flex flex-col gap-1">
+<div class="flex items-center justify-between font-label-mono-sm text-label-mono-sm">
+<span class="text-secondary">Source B: MedTech Consortium</span>
+<span class="text-outline">medtech-asia.io · 2023</span>
+</div>
+<p class="text-on-surface">
+                    "Advocates federated cross-border weight syncing without retaining local patient-identifiable training datasets."
+                  </p>
+</div>
+</div>
+<div class="flex items-center justify-between pt-space-2xs">
+<span class="font-label-mono-sm text-label-mono-sm text-outline">Scope: Cross-border compliance</span>
+<button class="inline-flex items-center gap-1 font-label-mono-sm text-label-mono-sm text-primary-container hover:underline">
+<span>View Evidence Graph</span>
+<span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Section D: Source Signals & Provenance -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg flex flex-col overflow-hidden">
+<div class="px-space-md py-space-sm border-b border-outline-variant flex items-center justify-between bg-surface-container">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-outline">verified</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Source Signals &amp; Provenance</span>
+</div>
+<span class="font-label-mono-sm text-label-mono-sm text-outline">6 PRIMARY REFS</span>
+</div>
+<div class="divide-y divide-outline-variant font-body-sm text-body-sm">
+<div class="p-space-sm flex items-center justify-between hover:bg-surface-container/50 transition-colors">
+<div class="flex flex-col min-w-0 pr-space-xs">
+<span class="font-body-md text-body-md text-on-surface truncate font-medium">National Health Authority ABDM Whitepaper</span>
+<div class="flex items-center gap-space-xs font-label-mono-sm text-label-mono-sm text-outline">
+<span>nha.gov.in</span>
+<span>·</span>
+<span>Mar 2024</span>
+<span>·</span>
+<span class="text-primary-container">Statutory</span>
+</div>
+</div>
+<span class="px-2 py-0.5 bg-surface-container border border-outline-variant text-[#8CE99A] rounded font-label-mono-sm text-label-mono-sm shrink-0">Current</span>
+</div>
+<div class="p-space-sm flex items-center justify-between hover:bg-surface-container/50 transition-colors">
+<div class="flex flex-col min-w-0 pr-space-xs">
+<span class="font-body-md text-body-md text-on-surface truncate font-medium">Clinical concordance of deep learning in rural PHCs</span>
+<div class="flex items-center gap-space-xs font-label-mono-sm text-label-mono-sm text-outline">
+<span>thelancet.com</span>
+<span>·</span>
+<span>Jan 2024</span>
+<span>·</span>
+<span class="text-primary-container">Peer-Reviewed</span>
+</div>
+</div>
+<span class="px-2 py-0.5 bg-surface-container border border-outline-variant text-[#8CE99A] rounded font-label-mono-sm text-label-mono-sm shrink-0">Current</span>
+</div>
+<div class="p-space-sm flex items-center justify-between hover:bg-surface-container/50 transition-colors">
+<div class="flex flex-col min-w-0 pr-space-xs">
+<span class="font-body-md text-body-md text-on-surface truncate font-medium">ICMR Technical Specs for AI Diagnostics in TB</span>
+<div class="flex items-center gap-space-xs font-label-mono-sm text-label-mono-sm text-outline">
+<span>icmr.nic.in</span>
+<span>·</span>
+<span>Nov 2023</span>
+<span>·</span>
+<span class="text-primary-container">Statutory Std</span>
+</div>
+</div>
+<span class="px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface-variant rounded font-label-mono-sm text-label-mono-sm shrink-0">Active</span>
+</div>
+<div class="p-space-sm flex items-center justify-between hover:bg-surface-container/50 transition-colors">
+<div class="flex flex-col min-w-0 pr-space-xs">
+<span class="font-body-md text-body-md text-on-surface truncate font-medium">AI in Indian Tertiary Healthcare: Infrastructure</span>
+<div class="flex items-center gap-space-xs font-label-mono-sm text-label-mono-sm text-outline">
+<span>orfonline.org</span>
+<span>·</span>
+<span>Feb 2024</span>
+<span>·</span>
+<span class="text-primary-container">Policy Brief</span>
+</div>
+</div>
+<span class="px-2 py-0.5 bg-surface-container border border-outline-variant text-[#8CE99A] rounded font-label-mono-sm text-label-mono-sm shrink-0">Current</span>
+</div>
+<div class="p-space-sm flex items-center justify-between hover:bg-surface-container/50 transition-colors">
+<div class="flex flex-col min-w-0 pr-space-xs">
+<span class="font-body-md text-body-md text-on-surface truncate font-medium">CDSCO Draft Guidelines on SaMD Framework</span>
+<div class="flex items-center gap-space-xs font-label-mono-sm text-label-mono-sm text-outline">
+<span>cdsco.gov.in</span>
+<span>·</span>
+<span>Oct 2023</span>
+<span>·</span>
+<span class="text-outline">Regulatory Draft</span>
+</div>
+</div>
+<span class="px-2 py-0.5 bg-surface-container border border-outline-variant text-on-surface-variant rounded font-label-mono-sm text-label-mono-sm shrink-0">Active</span>
+</div>
+<div class="p-space-sm flex items-center justify-between hover:bg-surface-container/50 transition-colors">
+<div class="flex flex-col min-w-0 pr-space-xs">
+<span class="font-body-md text-body-md text-on-surface truncate font-medium">MedTech Startup Deployment Survey</span>
+<div class="flex items-center gap-space-xs font-label-mono-sm text-label-mono-sm text-outline">
+<span>medtech-asia.io</span>
+<span>·</span>
+<span>2023</span>
+<span>·</span>
+<span class="text-outline">Paywall Partial</span>
+</div>
+</div>
+<span class="px-2 py-0.5 bg-surface-container border border-outline-variant text-tertiary rounded font-label-mono-sm text-label-mono-sm shrink-0">Incomplete</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Action & Telemetry Strip -->
+<div class="mt-space-sm bg-surface-container-low border border-outline-variant rounded-lg p-space-sm flex flex-col md:flex-row items-center justify-between gap-space-md">
+<div class="flex flex-col sm:flex-row items-start sm:items-center gap-space-xs font-label-mono-sm text-label-mono-sm text-outline w-full md:w-auto">
+<span class="px-1.5 py-0.5 bg-surface-container border border-outline-variant text-on-surface-variant rounded">PROTOCOL LOG</span>
+<span class="truncate">GET /api/research/gl-8842-new/results [200 OK] · /gaps [3 FOUND] · /conflicts [2 DETECTED]</span>
+</div>
+<div class="flex items-center gap-space-sm w-full md:w-auto justify-end">
+<button class="px-space-md py-space-xs bg-transparent border border-outline-variant text-on-surface rounded hover:bg-surface-container transition-colors font-body-md text-body-md">
+          Export Intelligence Report
+        </button>
+<button class="px-space-md py-space-xs bg-primary-container text-surface-container-lowest font-medium rounded hover:bg-primary transition-colors flex items-center gap-space-2xs font-body-md text-body-md">
+<span>Explore Evidence Library</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div></main></div><script src="/app.js" defer></script></body></html>

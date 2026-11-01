@@ -2382,4 +2382,4 @@ NEXT_PUBLIC_WS_URL=wss://gaplens-api.onrender.com
 
 ---
 
-*End of Blueprint. This document serves as the single source of truth for implementing GapLens. Every technical decision is traceable to the official problem statement, judging criteria, and verified research. Build P0 first. Ship working. Win.*
+*End of the original blueprint. The product flow remains a reference for pipeline behavior; its Next.js frontend recommendation is superseded by the current implementation decision in `docs/product/App_flow.md`, which serves the six supplied HTML pages from FastAPI.*

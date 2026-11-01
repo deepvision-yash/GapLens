@@ -1,5 +1,6 @@
 import asyncio
 import json
+import re
 import structlog
 from datetime import datetime
 from typing import Dict, Any, List, Optional, AsyncGenerator
@@ -17,8 +18,10 @@ from app.schemas.research import (
 )
 from app.services.external import tavily_service, jina_service, llm_service
 from app.core.config import settings
+from app.core.database import AsyncSessionLocal
 
 logger = structlog.get_logger()
+ACTIVE_PIPELINE_PROGRESS: Dict[str, Dict[str, Any]] = {}
 
 
 class PipelineOrchestrator:
@@ -45,36 +48,18 @@ class PipelineOrchestrator:
         self.db = db
         self.session_id: Optional[str] = None
         self.current_stage_index = 0
+        self.partial_errors: List[str] = []
     
     async def run_pipeline(self, session_id: str) -> None:
         """Run the full research pipeline for a session."""
         self.session_id = session_id
         
         try:
-            # Update status to understanding
-            await self._update_status(SessionStatus.UNDERSTANDING)
-            
-            # Stage 1: Goal Understanding
-            goal = await self._stage_understand_goal()
-            await self._emit_progress("understanding", 5, "Understood research goal")
-            
-            # Stage 2: Research Dimensions
-            dimensions = await self._stage_generate_dimensions(goal)
-            await self._emit_progress("dimensions", 10, f"Generated {len(dimensions)} dimensions")
-            
-            # Stage 3: Scope Review (wait for user confirmation via API)
-            await self._update_status(SessionStatus.SCOPE_REVIEW)
-            await self._emit_progress("scope_review", 15, "Awaiting scope confirmation")
-            
-            # Wait for READY status (triggered by POST /start)
-            while True:
-                await asyncio.sleep(1)
-                session = await self._get_session()
-                if session.status == SessionStatus.READY:
-                    break
-                elif session.status == SessionStatus.FAILED:
-                    return
-            
+            # /understand and /scope have already completed the user's review checkpoint.
+            # Run only the costly research stages after POST /start transitions the session to READY.
+            session = await self._get_session()
+            goal = ResearchGoal(**session.goal_json)
+            dimensions = [ResearchDimension(**d) for d in session.dimensions_json]
             await self._emit_progress("query_planning", 20, "Planning search queries")
             
             # Stage 4: Query Planning
@@ -82,51 +67,66 @@ class PipelineOrchestrator:
             
             # Stage 5: Parallel Web Search
             await self._update_status(SessionStatus.SEARCHING)
+            await self._emit_progress("searching", 30, "Searching the web for sources")
             sources = await self._stage_search(queries)
+            if not sources:
+                raise RuntimeError("No real sources were found. Configure the selected search provider or add source URLs and retry.")
             await self._emit_progress("searching", 35, f"Found {len(sources)} sources")
             
             # Stage 6: Source Extraction
             await self._update_status(SessionStatus.EXTRACTING)
+            await self._emit_progress("extracting", 42, "Extracting source content")
             await self._stage_extract_sources(sources)
             await self._emit_progress("extracting", 50, f"Extracted {len(sources)} sources")
             
             # Stage 7: Chunking & Embedding
+            await self._emit_progress("chunking", 50, "Chunking sources and generating embeddings")
             await self._stage_chunk_and_embed(sources)
             await self._emit_progress("chunking", 55, "Chunked and embedded sources")
             
             # Stage 8: Claim Extraction
             await self._update_status(SessionStatus.CLAIM_EXTRACTION)
+            await self._emit_progress("claims", 58, "Extracting source-grounded claims")
             claims = await self._stage_extract_claims(sources, dimensions)
             await self._emit_progress("claims", 65, f"Extracted {len(claims)} claims")
             
             # Stage 9: Coverage Analysis
             await self._update_status(SessionStatus.ANALYZING)
+            await self._emit_progress("coverage", 66, "Analyzing dimension coverage")
             await self._stage_coverage_analysis(dimensions, claims)
             await self._emit_progress("coverage", 70, "Completed coverage analysis")
             
             # Stage 10: Contradiction Detection
+            await self._emit_progress("contradictions", 70, "Checking for conflicting claims")
             conflicts = await self._stage_detect_contradictions(claims)
             await self._emit_progress("contradictions", 75, f"Found {len(conflicts)} conflicts")
+            session = await self._get_session()
+            dimensions = [ResearchDimension(**item) for item in session.dimensions_json]
             
             # Stage 11: Freshness Analysis
-            await self._stage_freshness_analysis(sources)
+            await self._emit_progress("freshness", 75, "Checking source publication dates")
+            await self._stage_freshness_analysis(sources, claims)
             await self._emit_progress("freshness", 80, "Completed freshness analysis")
             
             # Stage 12: Evidence Validation
+            await self._emit_progress("evidence", 80, "Validating claim excerpts against source text")
             await self._stage_evidence_validation(claims, sources)
             await self._emit_progress("evidence", 85, "Completed evidence validation")
             
             # Stage 13: Gap Prioritization
+            await self._emit_progress("gaps", 86, "Identifying research gaps")
             gaps = await self._stage_gap_prioritization(dimensions, claims)
             await self._emit_progress("gaps", 90, f"Identified {len(gaps)} gaps")
             
             # Stage 14: Verification Checklist
             await self._update_status(SessionStatus.GENERATING_CHECKLIST)
+            await self._emit_progress("checklist", 93, "Building the verification checklist")
             checklist = await self._stage_verification_checklist(gaps, claims, sources)
             await self._emit_progress("checklist", 95, f"Generated {len(checklist)} verification tasks")
             
             # Complete
-            await self._complete_session()
+            partial = bool(self.partial_errors) or not sources or any(s.extraction_status != "success" for s in sources)
+            await self._complete_session(is_partial=partial)
             await self._emit_progress("completed", 100, "Research completed")
             
         except Exception as e:
@@ -148,7 +148,7 @@ class PipelineOrchestrator:
         )
         return result.scalar_one()
     
-    async def _emit_progress(self, stage: str, progress: int, message: str) -> None:
+    async def _emit_progress(self, stage: str, progress: Optional[int], message: str) -> None:
         """Emit progress event (stored for SSE polling)."""
         # In a real implementation, this would push to Redis or in-memory store
         # For now, we update the session with progress info
@@ -160,6 +160,21 @@ class PipelineOrchestrator:
             )
         )
         await self.db.commit()
+        stage_names = [key for key, _ in self.STAGES]
+        if stage == "completed":
+            completed = stage_names
+            pending = []
+        else:
+            current_index = stage_names.index(stage) if stage in stage_names else 0
+            completed = stage_names[:current_index]
+            pending = stage_names[current_index + 1:]
+        ACTIVE_PIPELINE_PROGRESS[self.session_id] = {
+            "current_stage": stage,
+            "current_message": message,
+            "stages_completed": completed,
+            "stages_pending": pending,
+            "progress": progress,
+        }
         logger.info("Pipeline progress", session_id=self.session_id, stage=stage, progress=progress, message=message)
     
     # Pipeline Stages
@@ -180,7 +195,7 @@ class PipelineOrchestrator:
         - entities: array of strings (key entities, programs, organizations)
         - scope: array of strings (what's in/out of scope)
         - geography: array of strings (countries, states, regions)
-        - time_constraints: string or null (deadlines, cycles, years)
+        - time_constraints: string (deadlines, cycles, years; omit when none are specified)
         - constraints: array of strings (budget, eligibility, format requirements)
         """
         
@@ -192,13 +207,21 @@ class PipelineOrchestrator:
                 "entities": {"type": "array", "items": {"type": "string"}},
                 "scope": {"type": "array", "items": {"type": "string"}},
                 "geography": {"type": "array", "items": {"type": "string"}},
-                "time_constraints": {"type": ["string", "null"]},
+                # Gemini's legacy responseSchema endpoint rejects nullable
+                # union types. This field is optional in the schema, so an
+                # omitted value maps to ResearchGoal.time_constraints=None.
+                "time_constraints": {"type": "string"},
                 "constraints": {"type": "array", "items": {"type": "string"}},
             },
             "required": ["original_query", "interpreted_objective", "entities", "scope", "geography", "constraints"],
         }
         
         result = await llm_service.generate_structured(prompt, schema)
+        if not isinstance(result, dict):
+            raise ValueError("The LLM returned invalid research understanding.")
+        # The input goal belongs to this session and is authoritative. Never
+        # let model-generated text replace it in the saved session response.
+        result["original_query"] = session.goal_text
         
         goal = ResearchGoal(**result)
         
@@ -215,7 +238,7 @@ class PipelineOrchestrator:
     async def _stage_generate_dimensions(self, goal: ResearchGoal) -> List[ResearchDimension]:
         """Stage 2: Generate research dimensions."""
         prompt = f"""
-        Based on this research goal, generate 5-10 specific research dimensions:
+        Based on this research goal, generate between 4 and 6 specific research dimensions. Never return more than 6:
         
         Goal: {goal.interpreted_objective}
         Entities: {goal.entities}
@@ -233,6 +256,7 @@ class PipelineOrchestrator:
         
         schema = {
             "type": "array",
+            "maxItems": settings.MAX_DIMENSIONS,
             "items": {
                 "type": "object",
                 "properties": {
@@ -247,7 +271,18 @@ class PipelineOrchestrator:
         }
         
         result = await llm_service.generate_structured(prompt, schema)
-        dimensions = [ResearchDimension(**d) for d in result]
+        if not isinstance(result, list):
+            raise ValueError("The LLM returned invalid research dimensions.")
+        generated = [ResearchDimension(**d) for d in result]
+        generated = generated[:settings.MAX_DIMENSIONS]
+        session = await self._get_session()
+        custom = [ResearchDimension(**d) for d in session.dimensions_json]
+        generated_names = {dimension.name.casefold() for dimension in generated}
+        dimensions = (generated + [d for d in custom if d.name.casefold() not in generated_names])[:settings.MAX_DIMENSIONS]
+        if not dimensions:
+            raise ValueError("No research dimensions were generated. Retry scope generation.")
+        if len({dimension.id for dimension in dimensions}) != len(dimensions):
+            raise ValueError("Research dimensions contain duplicate IDs. Retry scope generation.")
         
         # Store dimensions
         dims_json = [d.model_dump() for d in dimensions]
@@ -261,47 +296,92 @@ class PipelineOrchestrator:
         return dimensions
     
     async def _stage_plan_queries(self, goal: ResearchGoal, dimensions: List[ResearchDimension]) -> List[str]:
-        """Stage 4: Plan search queries for each dimension."""
-        queries = []
-        
-        for dim in dimensions:
-            prompt = f"""
-            Generate 2-3 targeted search queries for this research dimension:
-            
-            Dimension: {dim.name}
-            Description: {dim.description}
-            Questions: {dim.questions}
-            Goal: {goal.interpreted_objective}
-            
-            Return JSON array of query strings.
-            """
-            
-            schema = {"type": "array", "items": {"type": "string"}}
-            
-            result = await llm_service.generate_structured(prompt, schema)
-            queries.extend(result)
-        
-        return queries
+        """Plan targeted searches for every scope dimension in one model request."""
+        dimension_specs = [
+            {"id": dim.id, "name": dim.name, "description": dim.description, "questions": dim.questions}
+            for dim in dimensions
+        ]
+        prompt = f"""
+        Plan two focused web search queries for each research dimension below.
+        Queries must seek verifiable information, prefer official or primary sources where applicable,
+        and include relevant geography or time constraints from the research objective.
+
+        Objective: {goal.interpreted_objective}
+        Geography: {goal.geography}
+        Time constraints: {goal.time_constraints}
+        Dimensions: {json.dumps(dimension_specs, ensure_ascii=False)}
+
+        Return one object per dimension containing its exact dimension_id and an array of search queries.
+        Do not invent findings or report results; this is query planning only.
+        """
+        schema = {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "dimension_id": {"type": "string"},
+                    "queries": {"type": "array", "items": {"type": "string"}},
+                },
+                "required": ["dimension_id", "queries"],
+            },
+        }
+        result = await llm_service.generate_structured(prompt, schema)
+        if not isinstance(result, list):
+            raise RuntimeError("Query planning returned an invalid response.")
+        known = {dim.id for dim in dimensions}
+        queries = [
+            value.strip()
+            for item in result if isinstance(item, dict) and item.get("dimension_id") in known
+            for value in item.get("queries", []) if isinstance(value, str) and value.strip()
+        ]
+        if not queries:
+            raise RuntimeError("Query planning did not produce any usable search queries.")
+        return list(dict.fromkeys(queries))
     
     async def _stage_search(self, queries: List[str]) -> List[Source]:
         """Stage 5: Parallel web search using Tavily."""
-        sources = []
+        # Include URL sources supplied during session creation in the same extraction pipeline.
+        initial = await self.db.execute(select(Source).where(Source.session_id == self.session_id))
+        sources = list(initial.scalars().all())
+        known_urls = {source.url for source in sources if source.url}
+
+        provider = settings.SEARCH_PROVIDER.strip().lower()
+        search_ready = bool(settings.JINA_API_KEY) if provider == "jina" else bool(settings.TAVILY_API_KEY)
+        if provider not in {"jina", "tavily"}:
+            raise RuntimeError("SEARCH_PROVIDER must be either 'jina' or 'tavily'.")
+        if not search_ready:
+            message = f"{provider} web search is not configured; only user-submitted URLs can be processed."
+            if not sources:
+                raise RuntimeError(f"{message} Add {provider.upper()} credentials or submit a source URL.")
+            self.partial_errors.append(message)
+            return sources
         
         # Deduplicate queries
-        unique_queries = list(dict.fromkeys(queries))[:settings.MAX_SOURCES_PER_SESSION]
+        unique_queries = list(dict.fromkeys(queries))
         
         for query in unique_queries:
-            result = await tavily_service.search(
-                query=query,
-                max_results=3,
-                search_depth=settings.SEARCH_DEPTH,
-            )
+            remaining = settings.MAX_SOURCES_PER_SESSION - len(sources)
+            if remaining <= 0:
+                break
+            try:
+                result = await tavily_service.search(
+                    query=query,
+                    max_results=min(3, remaining),
+                    search_depth=settings.SEARCH_DEPTH,
+                )
+            except Exception as exc:
+                self.partial_errors.append(str(exc))
+                logger.warning("Search query failed; continuing with remaining sources", query=query, error=str(exc))
+                continue
             
             for item in result.get("results", []):
+                url = item.get("url", "")
+                if not url or url in known_urls:
+                    continue
                 source = Source(
                     id=str(uuid4()),
                     session_id=self.session_id,
-                    url=item.get("url", ""),
+                    url=url,
                     title=item.get("title", ""),
                     domain=self._extract_domain(item.get("url", "")),
                     source_type=self._classify_source_type(item.get("url", "")),
@@ -311,6 +391,9 @@ class PipelineOrchestrator:
                 )
                 self.db.add(source)
                 sources.append(source)
+                known_urls.add(url)
+                if len(sources) >= settings.MAX_SOURCES_PER_SESSION:
+                    break
         
         await self.db.commit()
         return sources
@@ -319,27 +402,43 @@ class PipelineOrchestrator:
         """Stage 6: Extract content from sources using Jina Reader."""
         for source in sources:
             if not source.url:
+                # Uploaded documents were parsed and persisted by the upload endpoint.
+                if source.content and source.extraction_status == "success":
+                    continue
                 source.extraction_status = "failed"
                 continue
             
             try:
                 result = await jina_service.extract(source.url)
                 
-                if result.get("success"):
-                    source.content = result.get("content", "")
-                    source.title = result.get("title", source.title)
+                if result.get("success") and result.get("content", "").strip():
+                    extracted = result.get("content", "")
+                    title = result.get("title", source.title)
+                    access_challenge_markers = (
+                        "checking your browser", "recaptcha", "captcha challenge",
+                        "verify you are human", "access denied", "cloudflare ray id",
+                    )
+                    opening_text = f"{title or ''}\n{extracted[:600]}".casefold()
+                    if any(marker in opening_text for marker in access_challenge_markers):
+                        source.extraction_status = "failed"
+                        self.partial_errors.append(f"Source extraction returned an access challenge for {source.url}.")
+                        continue
+                    source.content = extracted
+                    source.title = title
                     source.extraction_status = "success"
                 else:
                     source.extraction_status = "failed"
+                    self.partial_errors.append(f"Source extraction failed for {source.url}: {result.get('error', 'no content returned')}")
             except Exception as e:
                 logger.error("Extraction failed", source_id=source.id, error=str(e))
                 source.extraction_status = "failed"
+                self.partial_errors.append(f"Source extraction failed for {source.url}: {e}")
         
         await self.db.commit()
     
     async def _stage_chunk_and_embed(self, sources: List[Source]) -> None:
-        """Stage 7: Chunk sources and generate embeddings."""
-        # Simplified: chunk text into overlapping segments
+        """Stage 7: Chunk sources and store Jina embeddings for semantic retrieval."""
+        pending_chunks = []
         for source in sources:
             if not source.content or source.extraction_status != "success":
                 continue
@@ -353,80 +452,116 @@ class PipelineOrchestrator:
                     chunk_index=i,
                     content=chunk,
                     token_count=len(chunk.split()),
-                    embedding=[],  # Placeholder for embeddings
+                    embedding=None,
                     char_start=i * (settings.CHUNK_SIZE - settings.CHUNK_OVERLAP),
                     char_end=(i + 1) * settings.CHUNK_SIZE,
                 )
                 self.db.add(chunk_obj)
+                pending_chunks.append(chunk_obj)
+
+        if pending_chunks and settings.JINA_API_KEY:
+            try:
+                texts = [chunk.content for chunk in pending_chunks]
+                vectors = []
+                for offset in range(0, len(texts), 32):
+                    vectors.extend(await jina_service.embed(texts[offset:offset + 32]))
+                for chunk, vector in zip(pending_chunks, vectors):
+                    chunk.embedding = vector
+            except Exception as exc:
+                self.partial_errors.append(f"Chunk embeddings unavailable: {exc}")
+                logger.warning("Embedding stage incomplete", error=str(exc))
+        elif pending_chunks:
+            self.partial_errors.append("Chunk embeddings skipped because JINA_API_KEY is not configured.")
         
         await self.db.commit()
     
     async def _stage_extract_claims(
         self, sources: List[Source], dimensions: List[ResearchDimension]
     ) -> List[Claim]:
-        """Stage 8: Extract structured claims from sources."""
+        """Stage 8: Extract source-grounded claims with one model call per source."""
         claims = []
         dim_map = {d.id: d for d in dimensions}
+        dimension_specs = [
+            {"id": d.id, "name": d.name, "description": d.description[:240]}
+            for d in dimensions
+        ]
         
         for source in sources:
             if not source.content or source.extraction_status != "success":
                 continue
-            
-            for dim in dimensions:
-                prompt = f"""
-                Extract factual claims from this source about: {dim.name}
-                
-                Dimension: {dim.name}
-                Description: {dim.description}
-                Questions: {dim.questions}
-                
-                Source content (first 5000 chars):
-                {source.content[:5000]}
-                
-                Extract claims as JSON array with:
-                - entity: what the claim is about
-                - attribute: what property/aspect
-                - value: the claimed value
-                - claim_type: fact/requirement/deadline/condition/procedure/contact
-                - excerpt: exact supporting text from source
-                - confidence: 0-1
-                """
-                
-                schema = {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "entity": {"type": "string"},
-                            "attribute": {"type": "string"},
-                            "value": {"type": "string"},
-                            "claim_type": {"type": "string"},
-                            "excerpt": {"type": "string"},
-                            "confidence": {"type": "number", "minimum": 0, "maximum": 1},
-                        },
-                        "required": ["entity", "attribute", "value", "claim_type", "excerpt", "confidence"],
+            prompt = f"""
+            Extract only factual claims supported by the supplied source text.
+            Assign each claim to the most relevant dimension using its exact id below.
+            Copy each excerpt verbatim from the source; never paraphrase or invent a citation.
+            Ignore claims that cannot be tied to an exact source passage.
+
+            Source reference: {source.url or source.title or source.id}
+            Source title: {source.title}
+            Research dimensions: {json.dumps(dimension_specs, ensure_ascii=False)}
+            Source content (first 6000 characters):
+            {source.content[:6000]}
+
+            Return at most 3 high-value JSON claims for this source. Keep entity, attribute,
+            value, and claim_type concise. Copy an exact excerpt of at most 400 characters.
+            Include dimension_id and confidence from 0 to 1.
+            """
+            schema = {
+                "type": "array",
+            "maxItems": 3,
+                "items": {
+                    "type": "object",
+                    "properties": {
+                    "dimension_id": {"type": "string"},
+                    "entity": {"type": "string"},
+                    "attribute": {"type": "string"},
+                    "value": {"type": "string"},
+                    "claim_type": {"type": "string"},
+                    "excerpt": {"type": "string"},
+                        "confidence": {"type": "number"},
                     },
-                }
-                
+                    "required": ["dimension_id", "entity", "attribute", "value", "claim_type", "excerpt", "confidence"],
+                },
+            }
+            try:
                 result = await llm_service.generate_structured(prompt, schema)
-                
-                for claim_data in result:
-                    claim = Claim(
-                        id=str(uuid4()),
-                        session_id=self.session_id,
-                        source_id=source.id,
-                        dimension_id=dim.id,
-                        claim_text=f"{claim_data['entity']} {claim_data['attribute']} is {claim_data['value']}",
-                        entity=claim_data["entity"],
-                        attribute=claim_data["attribute"],
-                        value=claim_data["value"],
-                        claim_type=claim_data["claim_type"],
-                        excerpt=claim_data["excerpt"],
-                        confidence=claim_data["confidence"],
-                        evidence_status=FindingStatus.POTENTIAL,
-                    )
-                    self.db.add(claim)
-                    claims.append(claim)
+            except Exception as exc:
+                self.partial_errors.append(f"Claim extraction failed for {source.url}: {exc}")
+                logger.warning("Claim extraction failed for source", source_id=source.id, error=str(exc))
+                continue
+            if not isinstance(result, list):
+                self.partial_errors.append(f"Claim extraction returned invalid data for {source.url}.")
+                continue
+
+            for claim_data in result:
+                if not isinstance(claim_data, dict) or not all(claim_data.get(key) for key in (
+                    "dimension_id", "entity", "attribute", "value", "claim_type", "excerpt"
+                )):
+                    self.partial_errors.append(f"Claim extraction returned an incomplete claim for {source.url}.")
+                    continue
+                dimension = dim_map.get(claim_data["dimension_id"])
+                if not dimension:
+                    self.partial_errors.append(f"Claim extraction returned an unknown dimension for {source.url}.")
+                    continue
+                confidence = claim_data.get("confidence", 0.0)
+                if not isinstance(confidence, (int, float)) or isinstance(confidence, bool):
+                    confidence = 0.0
+                confidence = max(0.0, min(1.0, float(confidence)))
+                claim = Claim(
+                    id=str(uuid4()),
+                    session_id=self.session_id,
+                    source_id=source.id,
+                    dimension_id=dimension.id,
+                    claim_text=f"{claim_data['entity']} {claim_data['attribute']} is {claim_data['value']}",
+                    entity=claim_data["entity"],
+                    attribute=claim_data["attribute"],
+                    value=claim_data["value"],
+                    claim_type=claim_data["claim_type"],
+                    excerpt=claim_data["excerpt"],
+                    confidence=confidence,
+                    evidence_status=FindingStatus.UNVERIFIED,
+                )
+                self.db.add(claim)
+                claims.append(claim)
         
         await self.db.commit()
         return claims
@@ -444,7 +579,7 @@ class PipelineOrchestrator:
             
             if not dim_claims:
                 dim.coverage_status = CoverageStatus.MISSING
-            elif len(dim_claims) >= 3:
+            elif len({claim.source_id for claim in dim_claims}) >= 2 and len(dim_claims) >= max(1, len(dim.questions)):
                 dim.coverage_status = CoverageStatus.COVERED
             else:
                 dim.coverage_status = CoverageStatus.PARTIAL
@@ -471,47 +606,66 @@ class PipelineOrchestrator:
             key = (claim.entity.lower(), claim.attribute.lower())
             claim_groups.setdefault(key, []).append(claim)
         
+        conflicting_dimensions = set()
         for (entity, attr), group in claim_groups.items():
             if len(group) < 2:
                 continue
             
-            # Check for conflicting values
-            values = set(c.value for c in group)
-            if len(values) > 1:
-                # Found contradiction
-                c1, c2 = group[0], group[1]
-                
-                # Determine conflict type (simplified)
-                conflict_type = ConflictType.GENUINE
-                
+            # Require distinct source records and differing values before surfacing a conflict.
+            distinct_claims = {}
+            for claim in group:
+                distinct_claims.setdefault(claim.value.strip().casefold(), claim)
+            pair = next(
+                ((left, right) for left in distinct_claims.values() for right in distinct_claims.values()
+                 if left.id != right.id and left.source_id != right.source_id),
+                None,
+            )
+            if pair:
+                c1, c2 = pair
                 conflict = Conflict(
                     id=str(uuid4()),
                     session_id=self.session_id,
-                    entity=entity,
-                    attribute=attr,
+                    entity=c1.entity,
+                    attribute=c1.attribute,
                     claim_a_id=c1.id,
                     claim_b_id=c2.id,
-                    conflict_type=conflict_type,
+                    conflict_type=ConflictType.UNCERTAIN,
                     resolution_action=f"Verify {entity} {attr} on official source",
-                    confidence=0.8,
+                    confidence=min(c1.confidence, c2.confidence),
                 )
                 self.db.add(conflict)
                 conflicts.append(conflict)
+                conflicting_dimensions.update((c1.dimension_id, c2.dimension_id))
+
+        if conflicting_dimensions:
+            session = await self._get_session()
+            dimensions = [ResearchDimension(**item) for item in session.dimensions_json]
+            for dimension in dimensions:
+                if dimension.id in conflicting_dimensions:
+                    dimension.coverage_status = CoverageStatus.CONFLICTING
+            await self.db.execute(
+                update(ResearchSession)
+                .where(ResearchSession.id == self.session_id)
+                .values(dimensions_json=[dimension.model_dump() for dimension in dimensions])
+            )
         
         await self.db.commit()
         return conflicts
     
-    async def _stage_freshness_analysis(self, sources: List[Source]) -> None:
-        """Stage 11: Analyze source freshness."""
-        # Simplified: classify based on publication date
-        for source in sources:
-            # In real implementation, would analyze dates and content
-            pass
-        
+    async def _stage_freshness_analysis(self, sources: List[Source], claims: List[Claim]) -> None:
+        """Attach source publication dates when available; do not infer an age rating."""
+        publication_dates = {
+            source.id: source.publication_date.date().isoformat()
+            for source in sources if source.publication_date
+        }
+        for claim in claims:
+            published = publication_dates.get(claim.source_id)
+            if published:
+                claim.freshness = f"Source publication date: {published}"
         await self.db.commit()
     
     async def _stage_evidence_validation(self, claims: List[Claim], sources: List[Source]) -> None:
-        """Stage 12: Validate evidence for claims."""
+        """Stage 12: Require each claimed excerpt to occur in its cited source."""
         source_map = {s.id: s for s in sources}
         
         for claim in claims:
@@ -519,15 +673,15 @@ class PipelineOrchestrator:
             if not source or not source.content:
                 claim.evidence_status = FindingStatus.UNVERIFIED
                 continue
-            
-            # Check if excerpt exists in source
-            if claim.excerpt and claim.excerpt in source.content:
-                claim.evidence_status = FindingStatus.VERIFIED
-            elif claim.excerpt:
-                # Fuzzy match
+
+            excerpt = re.sub(r"[^\w]+", " ", (claim.excerpt or "").casefold(), flags=re.UNICODE).strip()
+            source_text = re.sub(r"[^\w]+", " ", source.content.casefold(), flags=re.UNICODE)
+            if excerpt and excerpt in source_text:
+                # A matched passage supports traceability, not truth; verification remains a separate task.
                 claim.evidence_status = FindingStatus.POTENTIAL
             else:
                 claim.evidence_status = FindingStatus.UNVERIFIED
+                self.partial_errors.append(f"Claim excerpt could not be matched to source {source.url or source.title or source.id}.")
         
         await self.db.commit()
     
@@ -555,6 +709,7 @@ class PipelineOrchestrator:
                     next_action=f"Search for {dim.name} on official portals",
                     recommended_authority="Official government portal",
                     verification_method="official_source",
+                    source_ids=[],
                 )
                 self.db.add(gap)
                 gaps.append(gap)
@@ -566,10 +721,11 @@ class PipelineOrchestrator:
                     title=f"Conflict: {dim.name}",
                     explanation=f"Conflicting claims found for {dim.name}",
                     priority=Priority.CRITICAL,
-                    evidence_summary="Multiple sources provide different values",
-                    next_action="Verify on authoritative source",
+                    evidence_summary=" | ".join(dict.fromkeys(c.excerpt for c in dim_claims if c.excerpt))[:1200],
+                    next_action="Compare the cited source passages and confirm the current value with an authoritative source",
                     recommended_authority="Official portal",
                     verification_method="cross_reference",
+                    source_ids=list(dict.fromkeys(c.source_id for c in dim_claims)),
                 )
                 self.db.add(gap)
                 gaps.append(gap)
@@ -596,19 +752,21 @@ class PipelineOrchestrator:
                 verification_method=gap.verification_method,
                 source_ids=gap.source_ids or [],
             )
-            self.db.add(checklist)
+            self.db.add(item)
             checklist.append(item)
         
         await self.db.commit()
         return checklist
     
-    async def _complete_session(self) -> None:
+    async def _complete_session(self, is_partial: bool = False) -> None:
         """Mark session as completed."""
         await self.db.execute(
             update(ResearchSession)
             .where(ResearchSession.id == self.session_id)
             .values(
-                status=SessionStatus.COMPLETED,
+                status=SessionStatus.PARTIAL if is_partial else SessionStatus.COMPLETED,
+                is_partial=is_partial,
+                error="; ".join(self.partial_errors[:10]) if self.partial_errors else None,
                 completed_at=datetime.utcnow(),
                 updated_at=datetime.utcnow(),
             )
@@ -617,6 +775,7 @@ class PipelineOrchestrator:
     
     async def _fail_session(self, error: str) -> None:
         """Mark session as failed."""
+        await self.db.rollback()
         await self.db.execute(
             update(ResearchSession)
             .where(ResearchSession.id == self.session_id)
@@ -671,7 +830,8 @@ class PipelineOrchestrator:
         return chunks
 
 
-async def run_pipeline(session_id: str, db: AsyncSession) -> None:
-    """Entry point to run pipeline for a session."""
-    orchestrator = PipelineOrchestrator(db)
-    await orchestrator.run_pipeline(session_id)
+async def run_pipeline(session_id: str) -> None:
+    """Run a session with a task-owned database session, independent of the request."""
+    async with AsyncSessionLocal() as db:
+        orchestrator = PipelineOrchestrator(db)
+        await orchestrator.run_pipeline(session_id)

@@ -149,6 +149,10 @@ This will make the product more reliable during a hackathon demonstration.
 
 ## 4. Final UI flow — what the user actually experiences
 
+### Account and workspace entry
+
+The root route opens a small GapLens landing page. Users create an account or sign in before opening the research workspace. Authentication uses a signed, HTTP-only session cookie; every research session is owned by the account that created it. The home screen lists only that account's sessions, and API requests for another account's session return not found.
+
 The recommended product has six primary screens, with an additional optional source-management workflow.
 
 ### Screen 01 — Research Home
@@ -434,9 +438,11 @@ flowchart TD
 ### Product architecture
 
 - Modular monolith with FastAPI backend.
-- Next.js frontend.
+- The six supplied HTML screens are served directly by FastAPI, with a shared browser JavaScript client calling the same-origin API.
 - Deterministic pipeline with selective LLM reasoning.
 - No agentic architecture in the MVP.
+
+The earlier stack comparison in this document and the implementation blueprint records the original Next.js proposal. The current project decision replaces that frontend with the existing HTML templates served by FastAPI; the six-screen workflow and backend lifecycle below remain the product requirements.
 
 ### Input strategy
 

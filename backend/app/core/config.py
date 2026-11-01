@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import Field
+from pydantic import AliasChoices, Field
 from typing import Optional, List
 import json
 
@@ -10,9 +10,18 @@ class Settings(BaseSettings):
     APP_VERSION: str = "0.1.0"
     DEBUG: bool = True
     ENVIRONMENT: str = "development"
+    LLM_PROVIDER: str = "gemini"
+    GEMINI_MODEL: str = "gemini-3.8-flash"
+    GROQ_MODEL: str = "openai/gpt-oss-20b"
+    SEARCH_PROVIDER: str = "jina"
+    JINA_EMBEDDING_MODEL: str = "jina-embeddings-v3"
+    AUTH_SECRET_KEY: str = "local-development-key-change-before-deploying"
     
     # CORS (stored as JSON string in .env)
-    CORS_ORIGINS_JSON: str = '["http://localhost:3000", "http://localhost:3001"]'
+    CORS_ORIGINS_JSON: str = Field(
+        default='["http://localhost:3000", "http://localhost:3001"]',
+        validation_alias=AliasChoices("CORS_ORIGINS_JSON", "CORS_ORIGINS"),
+    )
     
     @property
     def CORS_ORIGINS(self) -> List[str]:
@@ -37,8 +46,8 @@ class Settings(BaseSettings):
     GROQ_API_KEY: Optional[str] = Field(default=None)
     
     # Pipeline settings
-    MAX_SOURCES_PER_SESSION: int = 15
-    MAX_DIMENSIONS: int = 10
+    MAX_SOURCES_PER_SESSION: int = 10
+    MAX_DIMENSIONS: int = 6
     SEARCH_DEPTH: str = "advanced"  # basic, advanced
     CHUNK_SIZE: int = 500
     CHUNK_OVERLAP: int = 100

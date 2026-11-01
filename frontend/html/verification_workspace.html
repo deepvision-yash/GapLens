@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600&amp;family=Roboto+Flex:wght@400;500;600&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-container-lowest": "#0e0e0e", "secondary-fixed": "#d8e3fa", "tertiary-fixed": "#ffdead", "on-primary-container": "#33537f", "on-tertiary-fixed-variant": "#604100", "on-error": "#690005", "surface": "#131313", "error": "#ffb4ab", "on-primary-fixed": "#001c3b", "on-primary": "#0a315b", "surface-dim": "#131313", "on-tertiary-container": "#6d4c07", "outline": "#8d9199", "surface-variant": "#353534", "surface-container": "#201f1f", "on-secondary": "#263142", "on-surface-variant": "#c3c6d0", "surface-container-highest": "#353534", "on-primary-fixed-variant": "#274773", "on-tertiary": "#432c00", "surface-tint": "#a9c8fb", "tertiary-fixed-dim": "#eebf73", "on-error-container": "#ffdad6", "on-tertiary-fixed": "#281900", "background": "#131313", "on-secondary-fixed": "#111c2d", "secondary-fixed-dim": "#bcc7dd", "tertiary": "#ffdca9", "secondary-container": "#3c475a", "on-background": "#e5e2e1", "secondary": "#bcc7dd", "surface-bright": "#393939", "inverse-surface": "#e5e2e1", "error-container": "#93000a", "primary-fixed-dim": "#a9c8fb", "primary-fixed": "#d5e3ff", "on-secondary-container": "#aab6cc", "surface-container-high": "#2a2a2a", "surface-container-low": "#1c1b1b", "tertiary-container": "#edbe72", "on-surface": "#e5e2e1", "inverse-on-surface": "#313030", "on-secondary-fixed-variant": "#3c475a", "outline-variant": "#43474f", "primary-container": "#a8c7fa", "primary": "#d3e2ff", "inverse-primary": "#405f8c" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin": "1.5rem", "space-sm": "0.75rem", "space-xs": "0.5rem", "space-xl": "2rem", "space-lg": "1.5rem", "space-2xs": "0.25rem", "gutter-sm": "0.5rem", "space-md": "1rem", "space-2xl": "3rem", "gutter": "1rem", "margin-sm": "1rem" }, "fontFamily": { "headline-sm": [ "Plus Jakarta Sans" ], "body-lg": [ "Roboto Flex" ], "headline-md": [ "Plus Jakarta Sans" ], "body-sm": [ "Roboto Flex" ], "label-mono-sm": [ "Space Mono" ], "headline-xl": [ "Plus Jakarta Sans" ], "headline-lg": [ "Plus Jakarta Sans" ], "body-md": [ "Roboto Flex" ], "label-mono-lg": [ "Space Mono" ], "label-mono-md": [ "Space Mono" ] }, "fontSize": { "headline-sm": [ "15px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "600" } ], "body-lg": [ "15px", { "lineHeight": "24px", "letterSpacing": "0.005em", "fontWeight": "400" } ], "headline-md": [ "18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600" } ], "body-sm": [ "12px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "400" } ], "label-mono-sm": [ "10px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "400" } ], "headline-xl": [ "32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" } ], "headline-lg": [ "24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" } ], "body-md": [ "13px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "400" } ], "label-mono-lg": [ "13px", { "lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "400" } ], "label-mono-md": [ "11px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "400" } ] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-[280px] bg-surface-container-low border-r border-outline-variant rounded-none z-50 flex flex-col justify-between select-none"><div class="flex flex-col"><div class="h-14 px-margin-sm border-b border-outline-variant flex items-center gap-space-xs"><img alt="GapLens Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UALMJ5ntTTERR4p5-Kb0chcSwVsg7IEPT-8H-VH8D8SzlYLGzkRfIQGbNgARVYBEg_vBBa-U4nXN-aQwkM8szMP4Oz9Xz52DYdtSEoeInJ2ftysiaDzaOTxq1otg-gis5kdO85R9xMm4Oa-NXD4ajmWS23FUUgCRy0gGN0d3wqNUuXUuMb_gC55LleVeEmjCJFYzSR-Vuv--Bj6O0_vhVPiUoxY0le9pZL6AanIsie"/><div class="flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm text-on-surface leading-none truncate">GapLens AI</span><span class="font-label-mono-sm text-label-mono-sm text-outline uppercase tracking-wider leading-none mt-1">Research Intelligence</span></div></div><div class="p-space-md"><a class="flex items-center justify-center gap-space-xs w-full py-space-xs px-space-md bg-secondary-container text-primary-container border border-primary-container/30 hover:border-primary-container hover:bg-secondary-container/80 transition-colors font-body-md text-body-md font-medium" data-path="research-workspace" href="#"><span class="material-symbols-outlined text-[18px]">add</span><span>+ New Research</span></a></div><nav class="flex flex-col px-space-xs gap-space-2xs" data-active-classes="bg-surface-container text-primary border-l-2 border-primary"><a class="flex items-center gap-space-xs px-space-sm py-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" data-path="research-workspace" href="#"><span class="material-symbols-outlined text-[18px]">terminal</span><span class="font-body-md text-body-md">Research Workspace</span></a><a class="flex items-center gap-space-xs px-space-sm py-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" data-path="evidence-library" href="#"><span class="material-symbols-outlined text-[18px]">dataset</span><span class="font-body-md text-body-md">Evidence Library</span></a><a class="flex items-center gap-space-xs px-space-sm py-space-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" data-path="gap-reports" href="#"><span class="material-symbols-outlined text-[18px]">analytics</span><span class="font-body-md text-body-md">Gap Reports</span></a></nav></div><div class="border-t border-outline-variant p-space-md bg-surface-container-lowest flex flex-col gap-space-2xs"><div class="flex items-center justify-between"><span class="font-label-mono-md text-label-mono-md text-outline">GapLens AI</span><span class="font-label-mono-sm text-label-mono-sm text-on-surface-variant px-1 border border-outline-variant bg-surface-container">v1.4.2-engine</span></div><div class="flex items-center gap-space-xs mt-1"><span class="h-1.5 w-1.5 rounded-full bg-primary-container"></span><span class="font-label-mono-sm text-label-mono-sm text-on-surface-variant">Core Engine: Operational</span></div></div></aside><div class="pl-[280px] min-h-screen flex flex-col"><header class="fixed top-0 left-[280px] right-0 h-14 bg-surface-container-low border-b border-outline-variant z-40 px-margin flex items-center justify-between"><div class="flex items-center gap-space-xs"><span class="font-label-mono-md text-label-mono-md text-outline">GapLens</span><span class="font-label-mono-md text-label-mono-md text-outline-variant">/</span><span class="font-label-mono-md text-label-mono-md text-on-surface">New Research</span></div><div class="flex items-center gap-space-md"><div class="hidden md:flex items-center gap-space-xs px-space-xs py-space-2xs border border-outline-variant bg-surface-container-lowest font-label-mono-sm text-label-mono-sm text-on-surface-variant"><span class="material-symbols-outlined text-[14px] text-primary-container">memory</span><span>LATENCY: 24ms</span></div><div class="hidden sm:flex items-center gap-space-2xs px-space-xs py-space-2xs border border-outline-variant bg-surface-container-lowest font-label-mono-sm text-label-mono-sm text-on-surface-variant"><span class="material-symbols-outlined text-[14px] text-primary-container">sync</span><span>SYNCED</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center cursor-pointer hover:bg-primary-fixed-dim transition-colors"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-14 w-full flex-1 bg-surface"><div class="flex flex-col w-full">
+<!-- Telemetry Sub-Header Strip -->
+<div class="w-full bg-surface-container-low border-b border-outline-variant px-margin py-space-xs flex flex-wrap items-center justify-between gap-space-sm select-none">
+<div class="flex items-center gap-space-xs font-label-mono-sm text-label-mono-sm text-outline">
+<span>NODE:</span>
+<span class="text-on-surface">gl-us-east-cluster-04</span>
+<span class="text-outline-variant">·</span>
+<span>LATENCY:</span>
+<span class="text-on-surface">24ms</span>
+<span class="text-outline-variant">·</span>
+<span>STATE:</span>
+<span class="text-primary-container">SYNCED</span>
+<span class="text-outline-variant">·</span>
+<span>SESSION:</span>
+<span class="text-on-surface">#GL-8842-NEW</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="h-1.5 w-1.5 rounded-full bg-primary-container"></span>
+<span class="font-label-mono-sm text-label-mono-sm text-on-surface-variant uppercase">Checklist Engine: V4 Active</span>
+</div>
+</div>
+<!-- Workspace Container -->
+<div class="p-margin flex flex-col gap-space-lg w-full max-w-[1720px] mx-auto">
+<!-- Header & Research Goal Block -->
+<div class="flex flex-col gap-space-md">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Verification Workspace</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Turn research gaps and uncertain findings into actionable verification tasks.</p>
+</div>
+<div class="flex items-center gap-space-xs shrink-0">
+<a class="inline-flex items-center gap-space-xs px-space-md py-space-xs bg-surface-container border border-outline-variant hover:border-outline text-on-surface rounded font-body-md text-body-md transition-colors" href="#">
+<span class="material-symbols-outlined text-[16px] text-outline">arrow_back</span>
+<span>Back to Evidence Explorer</span>
+</a>
+</div>
+</div>
+<!-- Target Research Objective Summary Box -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-space-md flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="flex flex-col gap-1 min-w-0">
+<div class="flex items-center gap-space-xs font-label-mono-sm text-label-mono-sm text-outline">
+<span class="material-symbols-outlined text-[14px] text-primary-container">target</span>
+<span class="uppercase tracking-wider">Target Objective</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface font-medium truncate">
+            “Analyse the current adoption, challenges, and future opportunities of AI in Indian healthcare.”
+          </p>
+</div>
+<div class="flex flex-wrap items-center gap-space-2xs shrink-0 font-label-mono-sm text-label-mono-sm">
+<span class="px-2 py-0.5 bg-surface-variant border border-outline-variant text-on-surface-variant rounded">SESSION: gl-8842-new</span>
+<span class="px-2 py-0.5 bg-surface-variant border border-outline-variant text-tertiary rounded">DERIVED GAPS: 3</span>
+<span class="px-2 py-0.5 bg-surface-variant border border-outline-variant text-secondary rounded">CONTROVERSIES: 2</span>
+<span class="px-2 py-0.5 bg-secondary-container border border-outline-variant text-primary rounded">CHECKLIST ENGINE: V4</span>
+</div>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<div class="flex items-center gap-space-2xs border-b border-outline-variant">
+<a class="px-space-md py-space-xs font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors border-b-2 border-transparent" href="#">
+        Overview
+      </a>
+<a class="px-space-md py-space-xs font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors border-b-2 border-transparent flex items-center gap-space-2xs" href="#">
+<span>Evidence</span>
+<span class="font-label-mono-sm text-label-mono-sm px-1.5 py-0.2 bg-surface-variant text-outline rounded">42 Claims</span>
+</a>
+<a class="px-space-md py-space-xs font-body-md text-body-md text-primary font-medium border-b-2 border-primary-container bg-surface-container flex items-center gap-space-2xs" href="#">
+<span class="material-symbols-outlined text-[16px] text-primary-container">checklist</span>
+<span>Verification</span>
+<span class="font-label-mono-sm text-label-mono-sm px-1.5 py-0.2 bg-secondary-container text-primary-container rounded">Checklist Active</span>
+</a>
+</div>
+<!-- Verification Summary Bar (Compact Metrics) -->
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-space-xs">
+<div class="bg-surface-container border border-outline-variant rounded p-space-xs px-space-sm flex flex-col justify-between">
+<span class="font-label-mono-sm text-label-mono-sm text-outline uppercase">Total Tasks</span>
+<div class="flex items-baseline gap-space-xs mt-1">
+<span class="font-headline-md text-headline-md text-on-surface font-semibold">6</span>
+<span class="font-label-mono-sm text-label-mono-sm text-on-surface-variant">Actionable</span>
+</div>
+</div>
+<div class="bg-surface-container border border-outline-variant rounded p-space-xs px-space-sm flex flex-col justify-between">
+<span class="font-label-mono-sm text-label-mono-sm text-outline uppercase">Completed</span>
+<div class="flex items-baseline gap-space-xs mt-1">
+<span class="font-headline-md text-headline-md text-primary font-semibold">2</span>
+<span class="font-label-mono-sm text-label-mono-sm text-primary-fixed-dim">Verified</span>
+</div>
+</div>
+<div class="bg-surface-container border border-outline-variant rounded p-space-xs px-space-sm flex flex-col justify-between">
+<span class="font-label-mono-sm text-label-mono-sm text-outline uppercase">Pending</span>
+<div class="flex items-baseline gap-space-xs mt-1">
+<span class="font-headline-md text-headline-md text-tertiary-container font-semibold">4</span>
+<span class="font-label-mono-sm text-label-mono-sm text-tertiary">Open</span>
+</div>
+</div>
+<div class="bg-surface-container border border-outline-variant rounded p-space-xs px-space-sm flex flex-col justify-between">
+<span class="font-label-mono-sm text-label-mono-sm text-outline uppercase">Critical Priority</span>
+<div class="flex items-baseline gap-space-xs mt-1">
+<span class="font-headline-md text-headline-md text-error font-semibold">2</span>
+<span class="font-label-mono-sm text-label-mono-sm text-error">High Risk</span>
+</div>
+</div>
+<div class="bg-surface-container border border-outline-variant rounded p-space-xs px-space-sm flex flex-col justify-between col-span-2 sm:col-span-1 lg:col-span-1">
+<span class="font-label-mono-sm text-label-mono-sm text-outline uppercase">Target Compliance</span>
+<div class="flex items-baseline gap-space-2xs mt-1 truncate">
+<span class="font-label-mono-md text-label-mono-md text-on-surface font-medium truncate">CDSCO / ICMR / ABDM</span>
+</div>
+</div>
+</div>
+<!-- Two-Column Workspace Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md items-start">
+<!-- LEFT/CENTER COLUMN: Verification Checklist (Col 7 / 8) -->
+<div class="lg:col-span-7 xl:col-span-8 flex flex-col gap-space-sm">
+<!-- Filter Bar -->
+<div class="bg-surface-container border border-outline-variant rounded p-space-xs flex flex-wrap items-center justify-between gap-space-xs">
+<div class="flex flex-wrap items-center gap-space-2xs">
+<!-- Filter Pills -->
+<button class="px-space-xs py-1 rounded bg-secondary-container text-primary-container border border-outline-variant font-label-mono-sm text-label-mono-sm">
+              All Tasks (6)
+            </button>
+<button class="px-space-xs py-1 rounded bg-surface-container-low text-on-surface-variant hover:text-on-surface border border-outline-variant font-label-mono-sm text-label-mono-sm">
+              Pending (4)
+            </button>
+<button class="px-space-xs py-1 rounded bg-surface-container-low text-on-surface-variant hover:text-on-surface border border-outline-variant font-label-mono-sm text-label-mono-sm">
+              Completed (2)
+            </button>
+<span class="text-outline-variant mx-1">|</span>
+<!-- Priority Badges -->
+<button class="px-space-xs py-1 rounded bg-surface-container-low text-error border border-outline-variant font-label-mono-sm text-label-mono-sm">
+              Critical (2)
+            </button>
+<button class="px-space-xs py-1 rounded bg-surface-container-low text-tertiary border border-outline-variant font-label-mono-sm text-label-mono-sm">
+              High (2)
+            </button>
+<button class="px-space-xs py-1 rounded bg-surface-container-low text-on-surface-variant border border-outline-variant font-label-mono-sm text-label-mono-sm">
+              Medium (2)
+            </button>
+</div>
+<!-- Quick Search Filter -->
+<div class="flex items-center gap-space-2xs bg-surface-container-low border border-outline-variant rounded px-space-xs py-1 w-full sm:w-auto min-w-[200px]">
+<span class="material-symbols-outlined text-[16px] text-outline">search</span>
+<input class="bg-transparent border-0 outline-none text-body-sm font-body-sm text-on-surface placeholder:text-outline w-full" placeholder="Filter verification tasks..." type="text"/>
+</div>
+</div>
+<!-- Task List Items -->
+<div class="flex flex-col gap-space-xs">
+<!-- TASK 1: SELECTED / ACTIVE -->
+<div class="bg-surface-variant border border-primary-container rounded p-space-sm flex flex-col gap-space-xs transition-colors cursor-pointer" onclick="selectTask('TSK-8842-01')">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-start gap-space-xs min-w-0">
+<input class="mt-1 h-4 w-4 rounded-none bg-surface-container-low border-outline-variant text-primary-container focus:ring-0 focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="font-label-mono-sm text-label-mono-sm text-primary-container font-semibold">TSK-8842-01</span>
+<span class="px-1.5 py-0.2 bg-error-container text-error text-label-mono-sm font-label-mono-sm rounded">CRITICAL</span>
+<span class="px-1.5 py-0.2 bg-secondary-container text-secondary text-label-mono-sm font-label-mono-sm rounded">PENDING</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-1">Verify Statutory Sensitivity Baseline vs Field Trial Discrepancy</h3>
+</div>
+</div>
+<span class="material-symbols-outlined text-[18px] text-primary-container shrink-0">check_box_outline_blank</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant ml-6">
+              Reconcile ICMR statutory requirement (min 92.5% sensitivity) with Lancet field trial findings (78.4% observed in Rajasthan &amp; Odisha PHCs lacking digitizers).
+            </p>
+<div class="flex flex-wrap items-center justify-between gap-space-xs ml-6 pt-space-xs border-t border-outline-variant font-label-mono-sm text-label-mono-sm text-outline">
+<div class="flex items-center gap-space-2xs">
+<span class="text-outline">DIM:</span>
+<span class="text-on-surface">DIM-INF-03 · Rural Infrastructure &amp; Last-Mile Delivery</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span>Method: <strong class="text-on-surface font-normal">Cross-Source Comparison</strong></span>
+<span class="text-outline-variant">·</span>
+<span>Authority: <strong class="text-on-surface font-normal">ICMR / Lancet Cohort</strong></span>
+</div>
+</div>
+</div>
+<!-- TASK 2: PENDING -->
+<div class="bg-surface-container border border-outline-variant hover:border-outline rounded p-space-sm flex flex-col gap-space-xs transition-colors cursor-pointer" onclick="selectTask('TSK-8842-02')">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-start gap-space-xs min-w-0">
+<input class="mt-1 h-4 w-4 rounded-none bg-surface-container-low border-outline-variant text-primary-container focus:ring-0 focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="font-label-mono-sm text-label-mono-sm text-outline">TSK-8842-02</span>
+<span class="px-1.5 py-0.2 bg-error-container text-error text-label-mono-sm font-label-mono-sm rounded">CRITICAL</span>
+<span class="px-1.5 py-0.2 bg-secondary-container text-secondary text-label-mono-sm font-label-mono-sm rounded">PENDING</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-1">Confirm ABDM / DPDP Compliance for Federated Weight Synchronization</h3>
+</div>
+</div>
+<span class="material-symbols-outlined text-[18px] text-outline shrink-0">check_box_outline_blank</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant ml-6">
+              Validate whether federated model weights cross-border transfer constitutes ‘personal identifiable health data’ under DPDP Act 2023 Section 4.
+            </p>
+<div class="flex flex-wrap items-center justify-between gap-space-xs ml-6 pt-space-xs border-t border-outline-variant font-label-mono-sm text-label-mono-sm text-outline">
+<div class="flex items-center gap-space-2xs">
+<span class="text-outline">DIM:</span>
+<span class="text-on-surface">DIM-REG-02 · Regulatory Frameworks &amp; Data Sovereignty</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span>Method: <strong class="text-on-surface font-normal">Official Regulatory Review</strong></span>
+<span class="text-outline-variant">·</span>
+<span>Authority: <strong class="text-on-surface font-normal">NHA &amp; MeitY</strong></span>
+</div>
+</div>
+</div>
+<!-- TASK 3: PENDING HIGH -->
+<div class="bg-surface-container border border-outline-variant hover:border-outline rounded p-space-sm flex flex-col gap-space-xs transition-colors cursor-pointer" onclick="selectTask('TSK-8842-03')">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-start gap-space-xs min-w-0">
+<input class="mt-1 h-4 w-4 rounded-none bg-surface-container-low border-outline-variant text-primary-container focus:ring-0 focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="font-label-mono-sm text-label-mono-sm text-outline">TSK-8842-03</span>
+<span class="px-1.5 py-0.2 bg-surface-variant text-tertiary text-label-mono-sm font-label-mono-sm rounded">HIGH</span>
+<span class="px-1.5 py-0.2 bg-secondary-container text-secondary text-label-mono-sm font-label-mono-sm rounded">PENDING</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-1">Audit Standalone AI Diagnostic Tariff Reimbursement in CGHS/AB-PMJAY</h3>
+</div>
+</div>
+<span class="material-symbols-outlined text-[18px] text-outline shrink-0">check_box_outline_blank</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant ml-6">
+              Ascertain if standalone software-as-a-medical-device (SaMD) diagnostic interpretation codes exist in National Health Benefit Package 2.2 schedules.
+            </p>
+<div class="flex flex-wrap items-center justify-between gap-space-xs ml-6 pt-space-xs border-t border-outline-variant font-label-mono-sm text-label-mono-sm text-outline">
+<div class="flex items-center gap-space-2xs">
+<span class="text-outline">DIM:</span>
+<span class="text-on-surface">DIM-ECO-04 · Economic Feasibility &amp; Reimbursement Models</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span>Method: <strong class="text-on-surface font-normal">Statutory Schedule Audit</strong></span>
+<span class="text-outline-variant">·</span>
+<span>Authority: <strong class="text-on-surface font-normal">National Health Authority (NHA)</strong></span>
+</div>
+</div>
+</div>
+<!-- TASK 4: PENDING HIGH -->
+<div class="bg-surface-container border border-outline-variant hover:border-outline rounded p-space-sm flex flex-col gap-space-xs transition-colors cursor-pointer" onclick="selectTask('TSK-8842-04')">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-start gap-space-xs min-w-0">
+<input class="mt-1 h-4 w-4 rounded-none bg-surface-container-low border-outline-variant text-primary-container focus:ring-0 focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="font-label-mono-sm text-label-mono-sm text-outline">TSK-8842-04</span>
+<span class="px-1.5 py-0.2 bg-surface-variant text-tertiary text-label-mono-sm font-label-mono-sm rounded">HIGH</span>
+<span class="px-1.5 py-0.2 bg-secondary-container text-secondary text-label-mono-sm font-label-mono-sm rounded">PENDING</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-1">Investigate Clinician Indemnity Under CDSCO Draft SaMD Triage</h3>
+</div>
+</div>
+<span class="material-symbols-outlined text-[18px] text-outline shrink-0">check_box_outline_blank</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant ml-6">
+              Check legal precedent or circulars defining liability apportionment when a medical officer overrides AI-generated triage scoring resulting in adverse outcome.
+            </p>
+<div class="flex flex-wrap items-center justify-between gap-space-xs ml-6 pt-space-xs border-t border-outline-variant font-label-mono-sm text-label-mono-sm text-outline">
+<div class="flex items-center gap-space-2xs">
+<span class="text-outline">DIM:</span>
+<span class="text-on-surface">DIM-REG-02 · Regulatory Frameworks &amp; Data Sovereignty</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span>Method: <strong class="text-on-surface font-normal">Precedent &amp; Circular Review</strong></span>
+<span class="text-outline-variant">·</span>
+<span>Authority: <strong class="text-on-surface font-normal">CDSCO Medical Device Division</strong></span>
+</div>
+</div>
+</div>
+<!-- TASK 5: COMPLETED -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-space-sm flex flex-col gap-space-xs opacity-75 hover:opacity-100 transition-opacity cursor-pointer" onclick="selectTask('TSK-8842-05')">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-start gap-space-xs min-w-0">
+<input checked="" class="mt-1 h-4 w-4 rounded-none bg-surface-container border-outline-variant text-primary-container focus:ring-0 focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="font-label-mono-sm text-label-mono-sm text-outline">TSK-8842-05</span>
+<span class="px-1.5 py-0.2 bg-surface-variant text-outline text-label-mono-sm font-label-mono-sm rounded">MEDIUM</span>
+<span class="px-1.5 py-0.2 bg-surface-variant text-primary-fixed-dim text-label-mono-sm font-label-mono-sm rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-primary-container">check</span> VERIFIED
+                    </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface-variant line-through mt-1">Validate ICMR Pre-Deployment Validation Protocol Standard</h3>
+</div>
+</div>
+<span class="material-symbols-outlined text-[18px] text-primary-container shrink-0">check_box</span>
+</div>
+<p class="font-body-md text-body-md text-outline ml-6">
+              Confirmed statutory testing requirements from ICMR TB AI Diagnostics guidelines (Nov 2023).
+            </p>
+<div class="flex flex-wrap items-center justify-between gap-space-xs ml-6 pt-space-xs border-t border-outline-variant font-label-mono-sm text-label-mono-sm text-outline">
+<div class="flex items-center gap-space-2xs">
+<span>DIM:</span>
+<span class="text-on-surface-variant">DIM-ACC-01 · Clinical Diagnostic Accuracy &amp; Efficacy</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span>Method: Document Verification</span>
+<span class="text-outline-variant">·</span>
+<span>Authority: ICMR nic.in portal</span>
+</div>
+</div>
+</div>
+<!-- TASK 6: COMPLETED -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-space-sm flex flex-col gap-space-xs opacity-75 hover:opacity-100 transition-opacity cursor-pointer" onclick="selectTask('TSK-8842-06')">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-start gap-space-xs min-w-0">
+<input checked="" class="mt-1 h-4 w-4 rounded-none bg-surface-container border-outline-variant text-primary-container focus:ring-0 focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="font-label-mono-sm text-label-mono-sm text-outline">TSK-8842-06</span>
+<span class="px-1.5 py-0.2 bg-surface-variant text-outline text-label-mono-sm font-label-mono-sm rounded">MEDIUM</span>
+<span class="px-1.5 py-0.2 bg-surface-variant text-primary-fixed-dim text-label-mono-sm font-label-mono-sm rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-primary-container">check</span> VERIFIED
+                    </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface-variant line-through mt-1">Confirm NHA Health Data Exchange API Encryption Standards</h3>
+</div>
+</div>
+<span class="material-symbols-outlined text-[18px] text-primary-container shrink-0">check_box</span>
+</div>
+<p class="font-body-md text-body-md text-outline ml-6">
+              Verified Ayushman Bharat Digital Mission (ABDM) M1/M2/M3 milestone security specifications.
+            </p>
+<div class="flex flex-wrap items-center justify-between gap-space-xs ml-6 pt-space-xs border-t border-outline-variant font-label-mono-sm text-label-mono-sm text-outline">
+<div class="flex items-center gap-space-2xs">
+<span>DIM:</span>
+<span class="text-on-surface-variant">DIM-REG-02 · Regulatory Frameworks &amp; Data Sovereignty</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span>Method: Official Specification Audit</span>
+<span class="text-outline-variant">·</span>
+<span>Authority: NHA ABDM Technical Release</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN: Task Details Context Panel (~380px) -->
+<div class="lg:col-span-5 xl:col-span-4 bg-surface-container border border-outline-variant rounded p-space-md flex flex-col gap-space-md sticky top-20">
+<!-- Header -->
+<div class="flex items-center justify-between border-b border-outline-variant pb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-primary-container">fact_check</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Task Details: TSK-8842-01</span>
+</div>
+<span class="px-2 py-0.5 bg-error-container text-error text-label-mono-sm font-label-mono-sm rounded font-medium">PENDING REVIEW</span>
+</div>
+<!-- Synthesis & Dimension Details -->
+<div class="flex flex-col gap-space-xs">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">
+            Verify Statutory Sensitivity Baseline vs Field Trial Discrepancy
+          </h2>
+<div class="flex items-center gap-space-xs font-label-mono-sm text-label-mono-sm text-outline">
+<span>RESEARCH DIMENSION:</span>
+<span class="text-primary-container">DIM-INF-03 (Rural Infrastructure)</span>
+</div>
+</div>
+<!-- Triggering Gap Context -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-space-xs flex flex-col gap-1">
+<div class="flex items-center gap-space-xs font-label-mono-sm text-label-mono-sm text-error">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+<span class="uppercase">Triggering Discrepancy / Evidence Gap</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface">
+<strong class="font-label-mono-sm text-label-mono-sm text-tertiary">GAP #02</strong> &amp; <strong class="font-label-mono-sm text-label-mono-sm text-on-surface">CLM-8842-014</strong>: Observed 14.1% sensitivity deficit between statutory regulatory requirement (92.5%) and empirical rural health center trials (78.4%).
+          </p>
+</div>
+<!-- Recommended Authority & Stakeholders -->
+<div class="flex flex-col gap-space-2xs">
+<span class="font-label-mono-sm text-label-mono-sm text-outline uppercase tracking-wider">Recommended Authority</span>
+<div class="flex flex-col gap-1 font-body-sm text-body-sm text-on-surface-variant">
+<div class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-[14px] text-outline mt-0.5">verified_user</span>
+<span>Indian Council of Medical Research (ICMR) — Technical Specifications Committee</span>
+</div>
+<div class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-[14px] text-outline mt-0.5">menu_book</span>
+<span>The Lancet Regional Health — Southeast Asia (Research Group)</span>
+</div>
+</div>
+</div>
+<!-- Verification Method -->
+<div class="flex flex-col gap-space-2xs">
+<span class="font-label-mono-sm text-label-mono-sm text-outline uppercase tracking-wider">Verification Method</span>
+<div class="bg-surface-container-low border border-outline-variant rounded p-space-xs">
+<span class="font-body-md text-body-md text-on-surface font-medium block">Cross-Source Comparison &amp; Empirical Validation Review</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+              Compare sample digitizer calibration standards from NITI Aayog aspirational district health centers against vendor testing bench reports.
+            </p>
+</div>
+</div>
+<!-- Related Sources & Documents -->
+<div class="flex flex-col gap-space-2xs">
+<span class="font-label-mono-sm text-label-mono-sm text-outline uppercase tracking-wider">Related Sources &amp; Documents</span>
+<div class="flex flex-col gap-space-2xs">
+<a class="p-space-xs bg-surface-container-low border border-outline-variant hover:border-outline rounded flex items-center justify-between transition-colors" href="#">
+<div class="flex items-center gap-space-xs min-w-0">
+<span class="material-symbols-outlined text-[16px] text-primary-container">description</span>
+<div class="flex flex-col min-w-0">
+<span class="font-label-mono-sm text-label-mono-sm text-on-surface truncate">icmr.nic.in/guidelines/tb-ai-specs</span>
+<span class="font-body-sm text-body-sm text-outline">Nov 2023 · Guidelines (Statutory Std)</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-[16px] text-outline">open_in_new</span>
+</a>
+<a class="p-space-xs bg-surface-container-low border border-outline-variant hover:border-outline rounded flex items-center justify-between transition-colors" href="#">
+<div class="flex items-center gap-space-xs min-w-0">
+<span class="material-symbols-outlined text-[16px] text-primary-container">article</span>
+<div class="flex flex-col min-w-0">
+<span class="font-label-mono-sm text-label-mono-sm text-on-surface truncate">thelancet.com/regional-health/se-asia-phc</span>
+<span class="font-body-sm text-body-sm text-outline">Jan 2024 · Cohort Study (Empirical Data)</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-[16px] text-outline">open_in_new</span>
+</a>
+</div>
+</div>
+<!-- Task Action Controls -->
+<div class="flex flex-col gap-space-xs pt-space-xs border-t border-outline-variant">
+<button class="w-full py-space-xs px-space-md bg-primary-container hover:bg-primary text-surface font-body-md text-body-md font-semibold rounded flex items-center justify-center gap-space-xs transition-colors">
+<span class="material-symbols-outlined text-[18px]">done_all</span>
+<span>Mark as Verified &amp; Complete</span>
+</button>
+<a class="w-full py-space-xs px-space-md bg-transparent border border-outline-variant hover:bg-surface-variant text-on-surface font-body-md text-body-md rounded flex items-center justify-center gap-space-xs transition-colors" href="#">
+<span>Inspect Linked Claim CLM-8842-014</span>
+<span class="material-symbols-outlined text-[16px] text-primary-container">arrow_forward</span>
+</a>
+<button class="w-full py-1 text-center font-label-mono-sm text-label-mono-sm text-outline hover:text-on-surface transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[14px]">download</span>
+<span>Export Task Dossier (.md)</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Bottom Status & Dispatch Bar -->
+<div class="w-full bg-surface-container border border-outline-variant rounded p-space-sm flex flex-col md:flex-row items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs font-label-mono-sm text-label-mono-sm text-outline">
+<span class="material-symbols-outlined text-[16px] text-primary-container">terminal</span>
+<span class="text-on-surface">PATCH /api/research/gl-8842-new/checklist/TSK-8842-01</span>
+<span class="px-1 bg-surface-variant text-primary-fixed-dim rounded font-semibold">[200 OK]</span>
+<span class="text-outline-variant">·</span>
+<span>4 tasks pending</span>
+<span class="text-outline-variant">·</span>
+<span class="text-primary-container">Audit state: ACTIVE</span>
+</div>
+<div class="flex items-center gap-space-xs w-full md:w-auto">
+<button class="flex-1 md:flex-none px-space-md py-space-xs bg-surface-container-low border border-outline-variant hover:border-outline text-on-surface font-body-md text-body-md rounded transition-colors flex items-center justify-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-outline">ios_share</span>
+<span>Export Verification Summary Report</span>
+</button>
+<button class="flex-1 md:flex-none px-space-md py-space-xs bg-secondary-container hover:bg-secondary-container/80 border border-primary-container/40 text-primary-container font-body-md text-body-md font-medium rounded transition-colors flex items-center justify-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+<span>Complete Research Session</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main></div><script src="/app.js" defer></script></body></html>

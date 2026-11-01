@@ -1,4 +1,4 @@
-from pydantic import BaseModel, HttpUrl, Field, ConfigDict
+from pydantic import BaseModel, HttpUrl, Field, ConfigDict, model_validator
 from typing import Optional, List, Literal, Dict, Any
 from datetime import datetime
 from uuid import UUID, uuid4
@@ -70,30 +70,38 @@ class SourceInput(BaseModel):
     url: Optional[HttpUrl] = None
     file_id: Optional[str] = None  # Reference to uploaded file
 
+    @model_validator(mode="after")
+    def validate_source_reference(self):
+        if self.kind == "url" and not self.url:
+            raise ValueError("A URL source requires a url value.")
+        if self.kind == "file" and not self.file_id:
+            raise ValueError("A file source requires a file_id reference.")
+        return self
+
 
 class ResearchGoal(BaseModel):
     original_query: str
     interpreted_objective: str
-    entities: List[str] = []
-    scope: List[str] = []
-    geography: List[str] = []
+    entities: List[str] = Field(default_factory=list)
+    scope: List[str] = Field(default_factory=list)
+    geography: List[str] = Field(default_factory=list)
     time_constraints: Optional[str] = None
-    constraints: List[str] = []
+    constraints: List[str] = Field(default_factory=list)
 
 
 class ResearchDimension(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid4()))
     name: str
     description: str
-    questions: List[str] = []
+    questions: List[str] = Field(default_factory=list)
     coverage_status: CoverageStatus = CoverageStatus.MISSING
     claim_count: int = 0
-    priority: int = 3  # 1-5
+    priority: int = Field(default=3, ge=1, le=5)
 
 
 class ResearchSessionCreate(BaseModel):
     goal: str = Field(..., min_length=10, max_length=2000)
-    sources: List[SourceInput] = []
+    sources: List[SourceInput] = Field(default_factory=list)
     user_dimensions: Optional[List[ResearchDimension]] = None
 
 
@@ -168,6 +176,7 @@ class GapResponse(BaseModel):
     next_action: str
     recommended_authority: Optional[str] = None
     verification_method: Literal["official_source", "cross_reference", "contact_authority", "calculate"] = "official_source"
+    source_ids: List[str] = Field(default_factory=list)
 
 
 class ConflictResponse(BaseModel):
@@ -191,7 +200,7 @@ class VerificationTaskResponse(BaseModel):
     completed: bool = False
     recommended_authority: Optional[str] = None
     verification_method: Literal["official_source", "cross_reference", "contact_authority", "calculate"] = "official_source"
-    source_ids: List[str] = []
+    source_ids: List[str] = Field(default_factory=list)
 
 
 class ChecklistUpdate(BaseModel):
@@ -202,13 +211,15 @@ class SessionStatusResponse(BaseModel):
     session_id: str
     status: SessionStatus
     current_stage: str
+    current_message: Optional[str] = None
     progress: int  # 0-100
-    stages_completed: List[str] = []
-    stages_pending: List[str] = []
+    stages_completed: List[str] = Field(default_factory=list)
+    stages_pending: List[str] = Field(default_factory=list)
     sources_found: int = 0
     claims_extracted: int = 0
-    errors: List[str] = []
+    errors: List[str] = Field(default_factory=list)
     is_partial: bool = False
+    can_resume: bool = False
 
 
 class SSEEvent(BaseModel):

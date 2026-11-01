@@ -4,14 +4,16 @@ GapLens stores research queries, extracted source text, claims, and verification
 
 ## Current security posture
 
-- There is no authentication, authorization, or session ownership enforcement.
-- UUID session identifiers are not credentials and do not prevent access by themselves.
+- Email/password registration and sign-in are available. Passwords are stored as PBKDF2 hashes and authentication uses an expiring signed HTTP-only cookie.
+- Research sessions are assigned to their creating account. Every `/api/research` request requires authentication, and session-specific routes check ownership.
+- Sessions created before account ownership was added remain unassigned and are not exposed in any account's session list.
+- Configure a unique `AUTH_SECRET_KEY` outside development. The development fallback is not suitable for deployment.
 - CORS is configurable, but CORS is not access control. The default origins are development localhost origins.
 - `/health` reports provider names and whether keys are configured; it does not return the keys.
 - Uploaded document contents and retrieved page contents are persisted in SQLite.
 - URL ingestion and server-side content fetching require protections against unsafe destinations and internal network access before operating with untrusted users. Review the current provider fetch flow and add an explicit SSRF policy for production.
 
-Do not expose this implementation publicly or place sensitive user research into an untrusted deployment until identity, authorization, isolation, and operational controls are implemented.
+The account flow is an MVP. Before a public deployment, add rate limits, account recovery, a reviewed CSRF strategy, and operational controls. Do not treat this as a complete identity platform.
 
 ## Secrets
 
@@ -32,7 +34,8 @@ Retrieved pages and files are untrusted input. Prompt injection, stale pages, ex
 
 ## Deployment checklist
 
-- [ ] Add authentication and enforce session ownership on every read and write.
+- [ ] Add rate limits, account recovery, and complete production identity controls.
+- [ ] Review CSRF protections, proxy headers, and cookie policy for the deployment topology.
 - [ ] Restrict origins and apply proxy/API rate limits.
 - [ ] Add URL destination validation and SSRF protections.
 - [ ] Use managed secrets, TLS, encrypted backups, and documented retention/deletion.

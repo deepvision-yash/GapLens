@@ -16,10 +16,20 @@ from app.schemas.research import (
 Base = declarative_base()
 
 
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(SQLUUID(as_uuid=False), primary_key=True, default=lambda: str(uuid4()))
+    email = Column(String(320), unique=True, index=True, nullable=False)
+    password_hash = Column(String(256), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    research_sessions = relationship("ResearchSession", back_populates="owner")
+
+
 class ResearchSession(Base):
     __tablename__ = "research_sessions"
     
-    id = Column(SQLUUID, primary_key=True, default=lambda: str(uuid4()))
+    id = Column(SQLUUID(as_uuid=False), primary_key=True, default=lambda: str(uuid4()))
     goal_text = Column(Text, nullable=False)
     goal_json = Column(JSON, nullable=False)  # ResearchGoal
     dimensions_json = Column(JSON, nullable=False)  # ResearchDimension[]
@@ -29,6 +39,8 @@ class ResearchSession(Base):
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
     completed_at = Column(DateTime, nullable=True)
+    owner_id = Column(SQLUUID(as_uuid=False), ForeignKey("users.id", ondelete="CASCADE"), nullable=True, index=True)
+    owner = relationship("User", back_populates="research_sessions")
     
     # Relationships
     sources = relationship("Source", back_populates="session", cascade="all, delete-orphan")
@@ -46,8 +58,8 @@ class ResearchSession(Base):
 class Source(Base):
     __tablename__ = "sources"
     
-    id = Column(SQLUUID, primary_key=True, default=lambda: str(uuid4()))
-    session_id = Column(SQLUUID, ForeignKey("research_sessions.id", ondelete="CASCADE"), nullable=False)
+    id = Column(SQLUUID(as_uuid=False), primary_key=True, default=lambda: str(uuid4()))
+    session_id = Column(SQLUUID(as_uuid=False), ForeignKey("research_sessions.id", ondelete="CASCADE"), nullable=False)
     url = Column(Text, nullable=True)
     title = Column(Text, nullable=True)
     domain = Column(String(255), nullable=True)
@@ -76,8 +88,8 @@ class Source(Base):
 class SourceChunk(Base):
     __tablename__ = "source_chunks"
     
-    id = Column(SQLUUID, primary_key=True, default=lambda: str(uuid4()))
-    source_id = Column(SQLUUID, ForeignKey("sources.id", ondelete="CASCADE"), nullable=False)
+    id = Column(SQLUUID(as_uuid=False), primary_key=True, default=lambda: str(uuid4()))
+    source_id = Column(SQLUUID(as_uuid=False), ForeignKey("sources.id", ondelete="CASCADE"), nullable=False)
     chunk_index = Column(Integer, nullable=False)
     content = Column(Text, nullable=False)
     token_count = Column(Integer, nullable=False)
@@ -97,9 +109,9 @@ class SourceChunk(Base):
 class Claim(Base):
     __tablename__ = "claims"
     
-    id = Column(SQLUUID, primary_key=True, default=lambda: str(uuid4()))
-    session_id = Column(SQLUUID, ForeignKey("research_sessions.id", ondelete="CASCADE"), nullable=False)
-    source_id = Column(SQLUUID, ForeignKey("sources.id", ondelete="CASCADE"), nullable=False)
+    id = Column(SQLUUID(as_uuid=False), primary_key=True, default=lambda: str(uuid4()))
+    session_id = Column(SQLUUID(as_uuid=False), ForeignKey("research_sessions.id", ondelete="CASCADE"), nullable=False)
+    source_id = Column(SQLUUID(as_uuid=False), ForeignKey("sources.id", ondelete="CASCADE"), nullable=False)
     dimension_id = Column(String(100), nullable=False)
     claim_text = Column(Text, nullable=False)
     entity = Column(String(255), nullable=False)
@@ -127,8 +139,8 @@ class Claim(Base):
 class Gap(Base):
     __tablename__ = "gaps"
     
-    id = Column(SQLUUID, primary_key=True, default=lambda: str(uuid4()))
-    session_id = Column(SQLUUID, ForeignKey("research_sessions.id", ondelete="CASCADE"), nullable=False)
+    id = Column(SQLUUID(as_uuid=False), primary_key=True, default=lambda: str(uuid4()))
+    session_id = Column(SQLUUID(as_uuid=False), ForeignKey("research_sessions.id", ondelete="CASCADE"), nullable=False)
     dimension_id = Column(String(100), nullable=False)
     title = Column(Text, nullable=False)
     explanation = Column(Text, nullable=False)
@@ -153,12 +165,12 @@ class Gap(Base):
 class Conflict(Base):
     __tablename__ = "conflicts"
     
-    id = Column(SQLUUID, primary_key=True, default=lambda: str(uuid4()))
-    session_id = Column(SQLUUID, ForeignKey("research_sessions.id", ondelete="CASCADE"), nullable=False)
+    id = Column(SQLUUID(as_uuid=False), primary_key=True, default=lambda: str(uuid4()))
+    session_id = Column(SQLUUID(as_uuid=False), ForeignKey("research_sessions.id", ondelete="CASCADE"), nullable=False)
     entity = Column(String(255), nullable=False)
     attribute = Column(String(255), nullable=False)
-    claim_a_id = Column(SQLUUID, ForeignKey("claims.id"), nullable=False)
-    claim_b_id = Column(SQLUUID, ForeignKey("claims.id"), nullable=False)
+    claim_a_id = Column(SQLUUID(as_uuid=False), ForeignKey("claims.id"), nullable=False)
+    claim_b_id = Column(SQLUUID(as_uuid=False), ForeignKey("claims.id"), nullable=False)
     conflict_type = Column(SQLEnum(ConflictType), nullable=False)
     resolution_action = Column(Text, nullable=True)
     confidence = Column(Float, default=0.0)
@@ -177,8 +189,8 @@ class Conflict(Base):
 class ChecklistItem(Base):
     __tablename__ = "checklist_items"
     
-    id = Column(SQLUUID, primary_key=True, default=lambda: str(uuid4()))
-    session_id = Column(SQLUUID, ForeignKey("research_sessions.id", ondelete="CASCADE"), nullable=False)
+    id = Column(SQLUUID(as_uuid=False), primary_key=True, default=lambda: str(uuid4()))
+    session_id = Column(SQLUUID(as_uuid=False), ForeignKey("research_sessions.id", ondelete="CASCADE"), nullable=False)
     dimension_id = Column(String(100), nullable=False)
     title = Column(Text, nullable=False)
     priority = Column(SQLEnum(Priority), nullable=False)

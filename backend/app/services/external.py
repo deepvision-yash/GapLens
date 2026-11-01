@@ -1,6 +1,9 @@
+import asyncio
 import httpx
+import re
 import structlog
-from typing import List, Dict, Any, Optional
+import json
+from typing import List, Dict, Any, Optional, Union
 from app.core.config import settings
 
 logger = structlog.get_logger()
@@ -23,10 +26,13 @@ class TavilyService:
         include_domains: Optional[List[str]] = None,
         exclude_domains: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
-        """Search web using Tavily."""
+        """Search using the configured provider and normalize results for the pipeline."""
+        if settings.SEARCH_PROVIDER.strip().lower() == "jina":
+            return await jina_service.search(query=query, max_results=max_results)
+        if settings.SEARCH_PROVIDER.strip().lower() != "tavily":
+            raise RuntimeError("SEARCH_PROVIDER must be either 'tavily' or 'jina'.")
         if not self.api_key:
-            logger.warning("Tavily API key not configured, returning mock results")
-            return self._mock_search_results(query)
+            raise RuntimeError("TAVILY_API_KEY is not configured.")
         
         payload = {
             "api_key": self.api_key,
@@ -49,15 +55,14 @@ class TavilyService:
             )
             response.raise_for_status()
             return response.json()
-        except Exception as e:
+        except httpx.HTTPError as e:
             logger.error("Tavily search failed", error=str(e))
-            return self._mock_search_results(query)
+            raise RuntimeError(f"Tavily search failed: {e}") from e
     
     async def extract(self, urls: List[str]) -> Dict[str, Any]:
         """Extract full content from URLs."""
         if not self.api_key:
-            logger.warning("Tavily API key not configured, returning mock extraction")
-            return {"results": []}
+            raise RuntimeError("TAVILY_API_KEY is not configured.")
         
         payload = {
             "api_key": self.api_key,
@@ -71,31 +76,9 @@ class TavilyService:
             )
             response.raise_for_status()
             return response.json()
-        except Exception as e:
+        except httpx.HTTPError as e:
             logger.error("Tavily extract failed", error=str(e))
-            return {"results": []}
-    
-    def _mock_search_results(self, query: str) -> Dict[str, Any]:
-        """Return mock search results for development."""
-        return {
-            "query": query,
-            "results": [
-                {
-                    "url": "https://example.gov.in/official-notification",
-                    "title": f"Official Notification for {query}",
-                    "content": f"This is mock content for {query}. Official source with detailed information.",
-                    "score": 0.95,
-                    "published_date": "2024-01-15",
-                },
-                {
-                    "url": "https://news.example.com/article",
-                    "title": f"News Article about {query}",
-                    "content": f"News coverage of {query} with analysis and updates.",
-                    "score": 0.85,
-                    "published_date": "2024-02-20",
-                },
-            ],
-        }
+            raise RuntimeError(f"Tavily extraction failed: {e}") from e
     
     async def close(self):
         await self.client.aclose()
@@ -104,7 +87,7 @@ class TavilyService:
 class JinaReaderService:
     """Jina AI Reader service for content extraction."""
     
-    BASE_URL = "https://r.jina.ai/http://"
+    BASE_URL = "https://r.jina.ai/"
     SEARCH_URL = "https://s.jina.ai/"
     
     def __init__(self):
@@ -114,7 +97,7 @@ class JinaReaderService:
     async def extract(self, url: str) -> Dict[str, Any]:
         """Extract clean markdown content from URL."""
         # Jina Reader doesn't require API key for basic usage
-        extract_url = f"https://r.jina.ai/http://{url.replace('https://', '').replace('http://', '')}"
+        extract_url = f"{self.BASE_URL}{url}"
         
         headers = {}
         if self.api_key:
@@ -136,7 +119,7 @@ class JinaReaderService:
                 "content": content,
                 "success": True,
             }
-        except Exception as e:
+        except httpx.HTTPError as e:
             logger.error("Jina Reader extract failed", url=url, error=str(e))
             return {
                 "url": url,
@@ -147,24 +130,72 @@ class JinaReaderService:
             }
     
     async def search(self, query: str, max_results: int = 10) -> Dict[str, Any]:
-        """Search using Jina AI search endpoint."""
-        search_url = f"{self.SEARCH_URL}{query}"
-        
-        headers = {}
-        if self.api_key:
-            headers["Authorization"] = f"Bearer {self.api_key}"
-        
+        """Search via Jina's JSON search API."""
+        if not self.api_key:
+            raise RuntimeError("JINA_API_KEY is required when SEARCH_PROVIDER=jina.")
+        headers = {"Authorization": f"Bearer {self.api_key}", "Accept": "application/json"}
         try:
-            response = await self.client.get(search_url, headers=headers, params={"q": query})
+            response = await self.client.post(
+                f"{self.SEARCH_URL}search",
+                headers=headers,
+                json={"q": query, "num": max_results},
+            )
             response.raise_for_status()
-            
-            # Parse results - Jina search returns markdown
-            content = response.text
-            return {"query": query, "content": content, "success": True}
-        except Exception as e:
-            logger.error("Jina search failed", error=str(e))
-            return {"query": query, "content": "", "success": False, "error": str(e)}
+            data = response.json()
+            items = data.get("data", data.get("results", []))
+            if not isinstance(items, list):
+                raise RuntimeError("Jina Search returned an unexpected response format.")
+            results = []
+            for item in items:
+                if not isinstance(item, dict) or not item.get("url"):
+                    continue
+                try:
+                    score = float(item.get("score", 0.0) or 0.0)
+                except (TypeError, ValueError):
+                    score = 0.0
+                results.append({
+                    "url": item["url"],
+                    "title": item.get("title") or item.get("url"),
+                    "content": item.get("content") or item.get("description"),
+                    "score": score,
+                    "published_date": item.get("publishedDate") or item.get("published_date") or item.get("publishedTime"),
+                })
+            return {"query": query, "results": results}
+        except httpx.HTTPError as e:
+            status = e.response.status_code if isinstance(e, httpx.HTTPStatusError) else None
+            logger.error("Jina Search failed", status_code=status)
+            raise RuntimeError(f"Jina Search failed{f' (HTTP {status})' if status else ''}.") from e
     
+    async def embed(self, texts: List[str]) -> List[List[float]]:
+        """Create Jina embeddings for a batch of source chunks."""
+        if not self.api_key:
+            raise RuntimeError("JINA_API_KEY is required for embeddings.")
+        if not texts:
+            return []
+        try:
+            response = await self.client.post(
+                "https://api.jina.ai/v1/embeddings",
+                headers={"Authorization": f"Bearer {self.api_key}"},
+                json={
+                    "model": settings.JINA_EMBEDDING_MODEL,
+                    "input": texts,
+                    "task": "retrieval.passage",
+                    "dimensions": settings.EMBEDDING_DIM,
+                    "embedding_type": "float",
+                    "normalized": True,
+                },
+            )
+            response.raise_for_status()
+            data = response.json().get("data", [])
+            ordered = sorted(data, key=lambda item: item.get("index", 0))
+            vectors = [item.get("embedding") for item in ordered]
+            if len(vectors) != len(texts) or any(not isinstance(vector, list) for vector in vectors):
+                raise RuntimeError("Jina returned an invalid embedding response.")
+            return vectors
+        except (httpx.HTTPError, ValueError, KeyError) as exc:
+            logger.error("Jina embeddings failed", error=str(exc))
+            raise RuntimeError(f"Jina embeddings failed: {exc}") from exc
+
     async def close(self):
         await self.client.aclose()
 
@@ -176,31 +207,66 @@ class LLMService:
         self.gemini_key = settings.GEMINI_API_KEY
         self.groq_key = settings.GROQ_API_KEY
         self.client = httpx.AsyncClient(timeout=60.0)
+
+    async def _post_with_retry(self, url: str, *, headers: Dict[str, str], payload: Dict[str, Any], provider: str):
+        """Retry one transient capacity/rate-limit response using the provider's wait hint."""
+        for attempt in range(2):
+            try:
+                response = await self.client.post(url, headers=headers, json=payload)
+                response.raise_for_status()
+                return response
+            except httpx.HTTPStatusError as exc:
+                if exc.response.status_code not in (429, 500, 502, 503, 504) or attempt == 1:
+                    raise
+                retry_after = exc.response.headers.get("retry-after")
+                match = re.search(r"try again in ([0-9]+(?:\.[0-9]+)?)\s*s", exc.response.text, re.IGNORECASE)
+                if retry_after:
+                    try:
+                        delay = float(retry_after)
+                    except ValueError:
+                        delay = float(match.group(1)) if match else 2.0
+                elif match:
+                    delay = float(match.group(1))
+                else:
+                    delay = 2.0
+                delay = min(60.0, max(1.0, delay))
+                logger.warning("Provider capacity limit; retrying once", provider=provider, status_code=exc.response.status_code, retry_after_seconds=delay)
+                await asyncio.sleep(delay)
     
     async def generate_structured(
         self,
         prompt: str,
         schema: Dict[str, Any],
-        provider: str = "gemini",
+        provider: Optional[str] = None,
         temperature: float = 0.1,
-    ) -> Dict[str, Any]:
+    ) -> Union[Dict[str, Any], List[Any]]:
         """Generate structured JSON output."""
-        if provider == "gemini" and self.gemini_key:
-            return await self._gemini_generate(prompt, schema, temperature)
-        elif provider == "groq" and self.groq_key:
+        provider = (provider or settings.LLM_PROVIDER).strip().lower()
+        if provider == "groq":
+            if not self.groq_key:
+                raise RuntimeError("GROQ_API_KEY is not configured.")
             return await self._groq_generate(prompt, schema, temperature)
-        else:
-            logger.warning("No LLM provider configured, returning mock")
-            return self._mock_response(schema)
+        if provider != "gemini":
+            raise RuntimeError("LLM_PROVIDER must be either 'gemini' or 'groq'.")
+        if self.gemini_key:
+            try:
+                return await self._gemini_generate(prompt, schema, temperature)
+            except Exception:
+                if not self.groq_key:
+                    raise
+                logger.warning("Gemini request failed; trying configured Groq fallback")
+        if self.groq_key:
+            return await self._groq_generate(prompt, schema, temperature)
+        raise RuntimeError("Configure GEMINI_API_KEY or GROQ_API_KEY to run research analysis.")
     
     async def _gemini_generate(
         self,
         prompt: str,
         schema: Dict[str, Any],
         temperature: float,
-    ) -> Dict[str, Any]:
+    ) -> Union[Dict[str, Any], List[Any]]:
         """Generate using Gemini API."""
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={self.gemini_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{settings.GEMINI_MODEL}:generateContent"
         
         payload = {
             "contents": [{"parts": [{"text": prompt}]}],
@@ -212,8 +278,7 @@ class LLMService:
         }
         
         try:
-            response = await self.client.post(url, json=payload)
-            response.raise_for_status()
+            response = await self._post_with_retry(url, headers={"x-goog-api-key": self.gemini_key}, payload=payload, provider="gemini")
             data = response.json()
             
             # Parse Gemini response
@@ -221,15 +286,17 @@ class LLMService:
             import json
             return json.loads(text)
         except Exception as e:
-            logger.error("Gemini generation failed", error=str(e))
-            return self._mock_response(schema)
+            status = e.response.status_code if isinstance(e, httpx.HTTPStatusError) else None
+            detail = e.response.text[:1200] if isinstance(e, httpx.HTTPStatusError) else str(e)
+            logger.error("Gemini generation failed", status_code=status, detail=detail)
+            raise RuntimeError(f"Gemini generation failed{f' (HTTP {status})' if status else ''}: {detail}") from e
     
     async def _groq_generate(
         self,
         prompt: str,
         schema: Dict[str, Any],
         temperature: float,
-    ) -> Dict[str, Any]:
+    ) -> Union[Dict[str, Any], List[Any]]:
         """Generate using Groq API."""
         url = "https://api.groq.com/openai/v1/chat/completions"
         
@@ -238,44 +305,35 @@ class LLMService:
             "Content-Type": "application/json",
         }
         
+        instruction = "Return valid JSON only, as one object with a single 'result' property whose value matches the requested schema. Do not add prose."
         payload = {
-            "model": "llama-3.1-8b-instant",
+            "model": settings.GROQ_MODEL,
             "messages": [
-                {"role": "system", "content": "You are a precise JSON generator. Output only valid JSON."},
-                {"role": "user", "content": f"{prompt}\n\nOutput schema: {schema}"},
+                {"role": "user", "content": f"{instruction}\n\n{prompt}\n\nSchema for result: {json.dumps(schema, ensure_ascii=False)}"},
             ],
             "temperature": temperature,
+            # Groq defaults to 1024 completion tokens; reasoning plus JSON
+            # output for scope/results can exceed that and produce truncated JSON.
+            "max_completion_tokens": 4096,
             "response_format": {"type": "json_object"},
+            "reasoning_format": "hidden",
+            "reasoning_effort": "low",
         }
         
         try:
-            response = await self.client.post(url, headers=headers, json=payload)
-            response.raise_for_status()
+            response = await self._post_with_retry(url, headers=headers, payload=payload, provider="groq")
             data = response.json()
             
-            import json
-            return json.loads(data["choices"][0]["message"]["content"])
+            parsed = json.loads(data["choices"][0]["message"]["content"])
+            if isinstance(parsed, dict) and "result" in parsed:
+                return parsed["result"]
+            if schema.get("type") == "array":
+                raise ValueError("Groq response did not include the required result array.")
+            return parsed
         except Exception as e:
-            logger.error("Groq generation failed", error=str(e))
-            return self._mock_response(schema)
-    
-    def _mock_response(self, schema: Dict[str, Any]) -> Dict[str, Any]:
-        """Generate mock response based on schema."""
-        # Simple mock based on schema properties
-        props = schema.get("properties", {})
-        result = {}
-        for key, prop in props.items():
-            if prop.get("type") == "string":
-                result[key] = f"mock_{key}"
-            elif prop.get("type") == "array":
-                result[key] = []
-            elif prop.get("type") == "number":
-                result[key] = 0
-            elif prop.get("type") == "boolean":
-                result[key] = True
-            elif prop.get("type") == "object":
-                result[key] = {}
-        return result
+            detail = e.response.text[:1200] if isinstance(e, httpx.HTTPStatusError) else str(e)
+            logger.error("Groq generation failed", detail=detail)
+            raise RuntimeError(f"Groq generation failed: {detail}") from e
     
     async def close(self):
         await self.client.aclose()

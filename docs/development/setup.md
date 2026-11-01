@@ -47,4 +47,4 @@ Startup creates tables in the database configured by `DATABASE_URL`; by default 
 - Create a research session, generate/edit scope, and verify status transitions before debugging a full provider-backed run.
 - For uploads, use text-based PDF, DOCX, or UTF-8 TXT under 10 MB. Scanned PDF images are not OCR processed.
 
-The repository has pytest dependencies and a `backend/tests` directory, but no maintained test suite or test command is documented here. Verify the current test files/config before treating tests as a reliable gate.
+The repository does not currently include a maintained test suite. Verify the application manually through the workflow above before submitting changes.

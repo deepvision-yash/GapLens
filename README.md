@@ -48,7 +48,7 @@ Start the app from `backend/`:
 uvicorn app.main:app --reload --port 8000
 ```
 
-Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Interactive API docs are at `/docs`; health and provider readiness are reported by `/health`.
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000) for the landing page, create an account or sign in, then start research. Interactive API docs are at `/docs`; health and provider readiness are reported by `/health`.
 
 On macOS/Linux, use `python -m venv .venv`, `source .venv/bin/activate`, and `cp .env.example .env` in place of the PowerShell commands.
 
@@ -64,6 +64,7 @@ Settings are loaded from environment variables or `backend/.env`. See [`backend/
 | `SEARCH_PROVIDER` | Selects `jina` or `tavily` for web search |
 | `JINA_API_KEY`, `TAVILY_API_KEY` | Search credentials; Jina is also used for URL reading and embeddings |
 | `DATABASE_URL` | SQLAlchemy async URL; defaults to local SQLite at `backend/gaplens.db` when launched from `backend/` |
+| `AUTH_SECRET_KEY` | Signs the HTTP-only authentication cookie; set a unique long random value outside development |
 | `MAX_SOURCES_PER_SESSION`, `MAX_DIMENSIONS` | Per-session input limits |
 | `CORS_ORIGINS` | Comma-separated allowed origins (JSON is also accepted) |
 | `DEBUG`, `ENVIRONMENT` | Development/runtime flags; set debug off outside local development |
@@ -102,7 +103,7 @@ All research endpoints use `/api/research`; the full request and response schema
 
 ## Data and deployment
 
-SQLite tables are created on startup. The local database is `backend/gaplens.db`; it contains research questions, source content, extracted claims, and user checklist state. Back it up and treat it as potentially sensitive. SQLite is suitable for local evaluation, not a horizontally scaled or ephemeral deployment. A hosted deployment needs persistent storage or a deliberately configured managed database, plus production-grade secret management and access controls. The checked-in `docker-compose.yml` is currently empty; it is not an available deployment path.
+SQLite tables are created on startup. The local database is `backend/gaplens.db`; it contains accounts, research questions, source content, extracted claims, and checklist state. It is ignored by Git and should be treated as potentially sensitive. SQLite is suitable for local evaluation, not a horizontally scaled or ephemeral deployment. A hosted deployment needs persistent storage or a deliberately configured managed database, plus production-grade secret management and access controls.
 
 See [`docs/architecture/architecture.md`](docs/architecture/architecture.md), [`docs/development/setup.md`](docs/development/setup.md), [`docs/operations/deployment.md`](docs/operations/deployment.md), and [`docs/operations/security-and-data.md`](docs/operations/security-and-data.md) before extending or deploying the app.
 
@@ -112,9 +113,6 @@ See [`docs/architecture/architecture.md`](docs/architecture/architecture.md), [`
 backend/app/       FastAPI application, API, schemas, services, pipeline, SQLAlchemy models
 frontend/html/     Static product screens and browser JavaScript
 docs/              Architecture, API, development, operations, product notes
-tests/             Test workspace (see test setup notes before adding suites)
-scripts/           Setup and development helper locations
-infrastructure/    Infrastructure workspace
 ```
 
 More detail: [`docs/README.md`](docs/README.md). Product flows and design rationale remain in [`docs/product/App_flow.md`](docs/product/App_flow.md) and [`docs/product/GapLens_Design.md`](docs/product/GapLens_Design.md).
@@ -123,7 +121,7 @@ More detail: [`docs/README.md`](docs/README.md). Product flows and design ration
 
 - Uploaded PDF extraction reads embedded text only; scanned documents need OCR, which is not implemented.
 - Pipeline progress is held in process memory for Server-Sent Events; it is not shared across multiple workers and is not durable after a restart.
-- The application currently has no user authentication or per-user authorization. Do not expose it publicly with real or sensitive research data without adding access controls.
+- The MVP includes email/password accounts and per-session ownership checks. Public deployment still needs rate limits, account recovery, CSRF review, and operational hardening.
 - SQLite initialization uses `create_all`; there is no configured migration workflow yet, despite Alembic being a dependency.
 - Provider output and extraction quality vary. Treat confidence and verification suggestions as aids for human review.
 - Browser UI is same-origin with the API; configure CORS only if you deliberately host a separate frontend.
